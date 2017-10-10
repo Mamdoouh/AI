@@ -2,7 +2,11 @@ import java.util.ArrayList;
 
 public class Grid {
 
-	private int m, n, obstacles, rocks, gaps;
+	private static int m;
+	private static int n;
+	private int obstacles;
+	private int rocks;
+	private int gaps;
 	private ArrayList<GridCell> gridObjs;
 	private GridCell [][] grid = null;
 	
@@ -64,6 +68,38 @@ public class Grid {
 	
 	public static void main(String[] args) {
 		Grid g = new Grid();
+	}
+
+	public static int getM() {
+		return m;
+	}
+
+	public void setM(int m) {
+		this.m = m;
+	}
+
+	public static int getN() {
+		return n;
+	}
+
+	public void setN(int n) {
+		this.n = n;
+	}
+
+	public ArrayList<GridCell> getGridObjs() {
+		return gridObjs;
+	}
+
+	public void setGridObjs(ArrayList<GridCell> gridObjs) {
+		this.gridObjs = gridObjs;
+	}
+
+	public GridCell[][] getGrid() {
+		return grid;
+	}
+
+	public void setGrid(GridCell[][] grid) {
+		this.grid = grid;
 	}
 
 }
