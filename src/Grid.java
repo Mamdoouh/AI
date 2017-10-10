@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Grid {
 
@@ -9,6 +10,7 @@ public class Grid {
 	private int gaps;
 	private ArrayList<GridCell> gridObjs;
 	private GridCell [][] grid = null;
+	
 	public Grid(){
 		m = genRandom(2, 10);
 		n = genRandom(2, 10);
@@ -21,7 +23,7 @@ public class Grid {
 		grid = new GridCell[m][n];
 		gridObjs = new ArrayList<>();
 		
-		fillObjects();
+		addObjects();
 	
 		System.out.println("Grid dimentions: " + m + " * " + n);
 		System.out.println("Robot: " + 1);
@@ -30,43 +32,80 @@ public class Grid {
 		System.out.println("Rocks: " + rocks);
 		System.out.println("Pads: " + rocks);
 		System.out.println("Gaps: " + gaps);
+		
+		generateGrid();
+		printGrid();
 	}
 	
+	// Constructs the grid by inserting all objects (including gaps) in random positions.
 	public void generateGrid(){
+		Collections.shuffle(gridObjs);
+		
 		for (int i = 0; i < grid.length; i++) {
 			for (int j = 0; j < grid[0].length; j++) {
 				int randIndex = genRandom(0, gridObjs.size()-1);
 				grid[i][j] = new GridCell(gridObjs.get(randIndex).getCellType());
+				gridObjs.remove(randIndex);
 			}
 		}
 	}
 	
-	public void fillObjects(){
-		for (int i = 0; i < gridObjs.size(); i++) {
-			gridObjs.add(new GridCell(CellType.ROBOT));
-			gridObjs.add(new GridCell(CellType.TELEPORTAL));
-			
-			for (int j = 0; j < obstacles; j++) {
-				gridObjs.add(new GridCell(CellType.OBSTACLE));
+	// Inserts all our objects (robot, rocks, ...) as grid cells in objects' list.
+	public void addObjects(){
+		gridObjs.add(new GridCell(CellType.ROBOT));
+		gridObjs.add(new GridCell(CellType.TELEPORTAL));
+		
+		for (int j = 0; j < obstacles; j++) {
+			gridObjs.add(new GridCell(CellType.OBSTACLE));
+		}
+		for (int j = 0; j < rocks; j++) {
+			gridObjs.add(new GridCell(CellType.ROCK));
+		}
+		for (int j = 0; j < rocks; j++) {
+			gridObjs.add(new GridCell(CellType.PAD));
+		}
+		for (int j = 0; j < gaps; j++) {
+			gridObjs.add(new GridCell(CellType.GAP));
+		}
+	}
+	
+	public void printGrid(){
+		for (int i = 0; i < grid.length; i++) {
+			for (int j = 0; j < grid[0].length; j++) {
+				CellType type = grid[i][j].getCellType();
+				
+				switch(type){
+		            case ROBOT: 
+		                System.out.print(" RT  ");
+		                break;
+		               
+		            case TELEPORTAL: 
+		                System.out.print("  T  ");
+		                break;
+		                
+		            case OBSTACLE: 
+		                System.out.print("  O  ");
+		                break;
+		                
+		            case ROCK: 
+		                System.out.print(" RK  ");
+		                break;
+		            
+		            case PAD: 
+		                System.out.print("  P  ");
+		                break;
+		                
+		            case GAP: 
+		                System.out.print("  G  ");
+		                break;
+				}
 			}
-			for (int j = 0; j < rocks; j++) {
-				gridObjs.add(new GridCell(CellType.ROCK));
-			}
-			for (int j = 0; j < rocks; j++) {
-				gridObjs.add(new GridCell(CellType.PAD));
-			}
-			for (int j = 0; j < gaps; j++) {
-				gridObjs.add(new GridCell(CellType.GAP));
-			}
+			System.out.println();
 		}
 	}
 	
 	public int genRandom(int lower, int upper){
 		return lower + (int) (Math.random()*upper);
-	}
-	
-	public static void main(String[] args) {
-		Grid g = new Grid();
 	}
 
 	public static int getM() {
@@ -74,7 +113,7 @@ public class Grid {
 	}
 
 	public void setM(int m) {
-		this.m = m;
+		Grid.m = m;
 	}
 
 	public static int getN() {
@@ -82,7 +121,7 @@ public class Grid {
 	}
 
 	public void setN(int n) {
-		this.n = n;
+		Grid.n = n;
 	}
 
 	public ArrayList<GridCell> getGridObjs() {
@@ -99,6 +138,10 @@ public class Grid {
 
 	public void setGrid(GridCell[][] grid) {
 		this.grid = grid;
+	}
+	
+	public static void main(String[] args) {
+		new Grid();
 	}
 
 }
