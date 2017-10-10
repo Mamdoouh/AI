@@ -1,0 +1,6 @@
+
+enum CellType {
+	
+	ROBOT, TELEPORTAL, OBSTACLE, ROCK, PAD, GAP
+	
+}
