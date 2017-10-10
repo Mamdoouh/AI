@@ -9,7 +9,6 @@ public class Grid {
 	private int gaps;
 	private ArrayList<GridCell> gridObjs;
 	private GridCell [][] grid = null;
-	
 	public Grid(){
 		m = genRandom(2, 10);
 		n = genRandom(2, 10);
