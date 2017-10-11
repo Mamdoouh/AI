@@ -5,10 +5,10 @@ public class Robot {
 	private Orientation orientation;
 	
 	public Robot(){
-		this.orientation = orientation.NORTH;
+		this.orientation = Orientation.NORTH;
 	}
 	public Robot(int i , int j){
-		this.orientation = orientation.NORTH;
+		this.orientation = Orientation.NORTH;
 		this.i =i;
 		this.j =j;
 	}
