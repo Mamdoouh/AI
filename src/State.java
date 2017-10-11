@@ -3,7 +3,16 @@ public class State {
 
 	private int i, j;
 	private Orientation orientation;
+	private int remainingPads;
 	
+	public int getRemainingPads() {
+		return remainingPads;
+	}
+
+	public void setRemainingPads(int remainingPads) {
+		this.remainingPads = remainingPads;
+	}
+
 	public State(int i, int j, Orientation orientation){
 		this.i = i;
 		this.j = j;

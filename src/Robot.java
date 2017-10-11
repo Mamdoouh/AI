@@ -10,6 +10,12 @@ public class Robot {
 		this.currentState.setOrientation(Orientation.NORTH); 
 		this.currentState.setI(i);
 		this.currentState.setJ(j);
+		this.orientation = Orientation.NORTH;
+	}
+	public Robot(int i , int j){
+		this.orientation = Orientation.NORTH;
+		this.i =i;
+		this.j =j;
 	}
 	public void move (){
 		
