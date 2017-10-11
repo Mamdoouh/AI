@@ -3,3 +3,12 @@
 /GridCell.class
 /Orientation.class
 /Robot.class
+/State.class
+/Node.class
+/Operator.class
+/Problem.class
+/GoalTest.class
+/PathCost.class
+/GeneralSearch.class
+/Test.class
+/Test2.class

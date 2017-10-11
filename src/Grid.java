@@ -1,6 +1,10 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
+// Assumptions :-
+// (1) Assume that either rocks or pads cannot exceed 30% of the grid.
+// (2) Assume that obstacles cannot exceed 10% of the grid.
+
 public class Grid {
 
 	private static int m;
@@ -11,28 +15,30 @@ public class Grid {
 	private ArrayList<GridCell> gridObjs;
 	private GridCell [][] grid = null;
 	
-	public Grid(){
-		m = genRandom(2, 10);
-		n = genRandom(2, 10);
-		int gridSize = m * n;
+	double rocksMaxPercentage = 0.3;
+	double obstaclesMaxPercentage = 0.1;
+	
+	public Grid(int m, int n){
+		// We reserve 2 cells for the robot and the teleportal.
+		int gridSize = m*n - 2;
 		
-		obstacles = genRandom(0, gridSize-4);
-		rocks = genRandom(1, (gridSize - obstacles - 2)/2);
-		gaps = gridSize - (obstacles + rocks*2 + 2);
-		
+		rocks = genRandom(1, (int)(gridSize*rocksMaxPercentage));
+		obstacles = genRandom(0, (int)(gridSize*obstaclesMaxPercentage));
+		gaps = gridSize - (rocks*2 + obstacles);
+
 		grid = new GridCell[m][n];
 		gridObjs = new ArrayList<>();
 		
-		addObjects();
-	
-		System.out.println("Grid dimentions: " + m + " * " + n);
+		fillObjectsList();
+		
+		System.out.println("Grid dimentions: " + m + " X " + n);
 		System.out.println("Robot: " + 1);
 		System.out.println("Teleportal: " + 1);
 		System.out.println("Obstacles: " + obstacles);
 		System.out.println("Rocks: " + rocks);
 		System.out.println("Pads: " + rocks);
-		System.out.println("Gaps: " + gaps);
-		
+		System.out.println("Gaps: " + gaps + "\n");
+
 		generateGrid();
 		printGrid();
 	}
@@ -51,7 +57,7 @@ public class Grid {
 	}
 	
 	// Inserts all our objects (robot, rocks, ...) as grid cells in objects' list.
-	public void addObjects(){
+	public void fillObjectsList(){
 		gridObjs.add(new GridCell(CellType.ROBOT));
 		gridObjs.add(new GridCell(CellType.TELEPORTAL));
 		
@@ -76,38 +82,39 @@ public class Grid {
 				
 				switch(type){
 		            case ROBOT: 
-		                System.out.print(" RT  ");
+		                System.out.print("  ROB  ");
 		                break;
 		               
 		            case TELEPORTAL: 
-		                System.out.print("  T  ");
+		                System.out.print("  TEL  ");
 		                break;
 		                
 		            case OBSTACLE: 
-		                System.out.print("  O  ");
+		                System.out.print("  OBS  ");
 		                break;
 		                
 		            case ROCK: 
-		                System.out.print(" RK  ");
+		                System.out.print("  ROC  ");
 		                break;
 		            
 		            case PAD: 
-		                System.out.print("  P  ");
+		                System.out.print("  PAD  ");
 		                break;
 		                
 		            case GAP: 
-		                System.out.print("  G  ");
+		                System.out.print("  GAP  ");
 		                break;
 				}
 			}
-			System.out.println();
+			System.out.print("\n\n");
 		}
 	}
 	
-	public int genRandom(int lower, int upper){
-		return lower + (int) (Math.random()*upper);
+	public int genRandom(int min, int max){
+		return min + (int) (Math.random()*max);
 	}
 
+	// Getters and setters
 	public static int getM() {
 		return m;
 	}
@@ -141,7 +148,7 @@ public class Grid {
 	}
 	
 	public static void main(String[] args) {
-		new Grid();
+		new Grid(3, 3);
 	}
 
 }
