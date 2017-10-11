@@ -8,6 +8,15 @@ public class Problem{
 	private int teleI;
 	private int teleJ;
 	
+	
+	public ArrayList<String> getOperators() {
+		return operators;
+	}
+
+	public State getInitialState() {
+		return initialState;
+	}
+
 	public Problem(ArrayList<String> operators, ArrayList<Integer> costs, 
 				   State initialState, int teleI, int teleJ){
 		
@@ -32,23 +41,6 @@ public class Problem{
 		}
 		
 		return totalCost;
-	}
-
-	// Getters and setters
-	public ArrayList<String> getOperators() {
-		return operators;
-	}
-
-	public void setOperators(ArrayList<String> operators) {
-		this.operators = operators;
-	}
-
-	public State getInitialState() {
-		return initialState;
-	}
-
-	public void setInitialState(State initialState) {
-		this.initialState = initialState;
 	}
 
 }
