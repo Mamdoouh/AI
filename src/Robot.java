@@ -16,15 +16,21 @@ public class Robot {
 		
 		if (o.equals(Orientation.EAST) && (i < Grid.getM())){
 			this.i ++;
+			this.orientation = Orientation.EAST;
 		}else
 			if (o.equals(Orientation.WEST) && (i > Grid.getM())){
 				this.i --;
+				this.orientation = Orientation.WEST;
+
 			}else
 				if (o.equals(Orientation.NORTH) && (i > Grid.getN())){
 				this.j --;
+				this.orientation = Orientation.NORTH;
+
 			}else
 				if (o.equals(Orientation.SOUTH) && (i < Grid.getN())){
 					this.j ++;
+					this.orientation = Orientation.SOUTH;
 			}
 	}
 
