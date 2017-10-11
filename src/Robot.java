@@ -1,59 +1,72 @@
 
 public class Robot {
 	
-	private int i,j;
-	private Orientation orientation;
+	private State currentState;
 	
 	public Robot(){
-		this.orientation = orientation.NORTH;
+		this.currentState.setOrientation(Orientation.NORTH); 
 	}
 	public Robot(int i , int j){
-		this.orientation = orientation.NORTH;
-		this.i =i;
-		this.j =j;
+		this.currentState.setOrientation(Orientation.NORTH); 
+		this.currentState.setI(i);
+		this.currentState.setJ(j);
 	}
-	public void move (Orientation o){
+	public void move (){
 		
-		if (o.equals(Orientation.EAST) && (i < Grid.getM())){
-			this.i ++;
-			this.orientation = Orientation.EAST;
+		if (this.currentState.getOrientation().equals(Orientation.EAST) && (this.currentState.getI() < Grid.getM())){
+			this.currentState.setI(this.currentState.getI()+1);
 		}else
-			if (o.equals(Orientation.WEST) && (i > Grid.getM())){
-				this.i --;
-				this.orientation = Orientation.WEST;
+			if (this.currentState.getOrientation().equals(Orientation.WEST) && (this.currentState.getI() > 0)){
+				this.currentState.setI(this.currentState.getI() -1);
 
 			}else
-				if (o.equals(Orientation.NORTH) && (i > Grid.getN())){
-				this.j --;
-				this.orientation = Orientation.NORTH;
+				if (this.currentState.getOrientation().equals(Orientation.NORTH) && (this.currentState.getJ() > 0)){
+					this.currentState.setJ(this.currentState.getJ() -1);
 
 			}else
-				if (o.equals(Orientation.SOUTH) && (i < Grid.getN())){
-					this.j ++;
-					this.orientation = Orientation.SOUTH;
+				if (this.currentState.getOrientation().equals(Orientation.SOUTH) && (this.currentState.getJ() < Grid.getN())){
+					this.currentState.setJ(this.currentState.getJ() +1);
 			}
 	}
+	public void rotateR (){
+		
+		if (this.currentState.getOrientation().equals(Orientation.NORTH)){
+			this.currentState.setOrientation(Orientation.EAST);
+		}else
+			if (this.currentState.getOrientation().equals(Orientation.EAST)){
+				this.currentState.setOrientation(Orientation.SOUTH);
+		}else
+			if (this.currentState.getOrientation().equals(Orientation.SOUTH)){
+				this.currentState.setOrientation(Orientation.WEST);
+			}else
+				if (this.currentState.getOrientation().equals(Orientation.WEST)){
+					this.currentState.setOrientation(Orientation.NORTH);
+				}
+	 }
+	
+	public void rotateL (Orientation o){
+			
+			if (this.currentState.getOrientation().equals(Orientation.NORTH)){
+				this.currentState.setOrientation(Orientation.WEST);
+			}else
+				if (this.currentState.getOrientation().equals(Orientation.WEST)){
+					this.currentState.setOrientation(Orientation.SOUTH);
+			}else
+				if (this.currentState.getOrientation().equals(Orientation.SOUTH)){
+					this.currentState.setOrientation(Orientation.EAST);
+				}else
+					if (this.currentState.getOrientation().equals(Orientation.EAST)){
+						this.currentState.setOrientation(Orientation.NORTH);
+					}
+		
+	}
+	public State getCurrent() {
+		return currentState;
+	}
+	public void setCurrent(State current) {
+		this.currentState = current;
+	}
 
-	public int getI() {
-		return i;
-	}
-	public void setI(int i) {
-		this.i = i;
-	}
-	public int getJ() {
-		return j;
-	}
-	public void setJ(int j) {
-		this.j = j;
-	}
-	public Orientation getOrientation() {
-		return orientation;
-	}
-
-	public void setOrientation(Orientation orientation) {
-		this.orientation = orientation;
-	}
 	
 	
-
 }
