@@ -13,10 +13,11 @@ public class State {
 		this.remainingPads = remainingPads;
 	}
 
-	public State(int i, int j, Orientation orientation){
+	public State(int i, int j, Orientation orientation, int reminaingPads){
 		this.i = i;
 		this.j = j;
 		this.orientation = orientation;
+		this.remainingPads = reminaingPads;
 	}
 	
 	// Getters and setters
