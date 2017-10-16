@@ -1,14 +1,14 @@
 
 public class Node {
 
-	State state;
-	Node parent;
-	String operator;
-	int depth;
-	int costFromRoot;
+	private State state;
+	private Node parent;
+	private String operator;
+	private int depth;
+	private int costFromRoot;
 	
-	public Node(State state, Node parent, String operator, int depth, int prevCost){
-		this.costFromRoot = prevCost;
+	public Node(State state, Node parent, String operator, int depth, int costFromRoot){
+		this.costFromRoot = costFromRoot;
 		this.state = state;
 		this.parent = parent;
 		this.operator = operator;

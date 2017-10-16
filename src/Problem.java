@@ -1,46 +1,35 @@
 import java.util.ArrayList;
+import java.util.Hashtable;
 
-public class Problem{
+public abstract class Problem{
 	
-	private ArrayList<String> operators;
-	private ArrayList<Integer> costs;
+	private Hashtable<String, Integer> operators; //Name -> Cost
 	private State initialState;
-	private int teleI;
-	private int teleJ;
-	
-	
-	public ArrayList<String> getOperators() {
-		return operators;
-	}
 
+	public Problem(Hashtable<String, Integer> operators, State initialState){
+		this.operators = operators;
+		this.initialState = initialState;
+	}
+	
 	public State getInitialState() {
 		return initialState;
 	}
-
-	public Problem(ArrayList<String> operators, ArrayList<Integer> costs, 
-				   State initialState, int teleI, int teleJ){
-		
-		this.operators = operators;
-		this.costs = costs;
-		this.initialState = initialState;
-		this.teleI = teleI;
-		this.teleJ = teleJ;
-		
-	}
 	
-	public boolean goalTest(State currentState){
-		return currentState.getRemainingPads() == 0 && 
-			   currentState.getI() == teleI && 
-			   currentState.getJ() == teleJ;
+	public Hashtable<String, Integer> getOperators() {
+		return operators;
 	}
 	
 	public int pathCost(ArrayList<String> actions){
 		int totalCost = 0;
-		for (int i = 0; i < actions.size(); i++) {
-			totalCost += costs.get(i);
+		for (String action : actions) {
+			totalCost += operators.get(action);
 		}
 		
 		return totalCost;
 	}
-
+	
+	// Abstract functions to be implemented by Help_R2D2.
+	public abstract boolean goalTest(State currentState);
+	public abstract Hashtable<State, String> transition(State currentState);
+	
 }

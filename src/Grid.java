@@ -15,6 +15,9 @@ public class Grid {
 	private ArrayList<GridCell> gridObjs;
 	private GridCell [][] grid = null;
 	
+	// Save robot and teleportal chosen locations
+	private int teleI, teleJ, robotI, robotJ;
+
 	double rocksMaxPercentage = 0.3;
 	double obstaclesMaxPercentage = 0.1;
 	
@@ -30,15 +33,6 @@ public class Grid {
 		gridObjs = new ArrayList<>();
 		
 		fillObjectsList();
-		
-		System.out.println("Grid dimentions: " + m + " X " + n);
-		System.out.println("Robot: " + 1);
-		System.out.println("Teleportal: " + 1);
-		System.out.println("Obstacles: " + obstacles);
-		System.out.println("Rocks: " + rocks);
-		System.out.println("Pads: " + rocks);
-		System.out.println("Gaps: " + gaps + "\n");
-
 		generateGrid();
 		printGrid();
 	}
@@ -50,12 +44,25 @@ public class Grid {
 		for (int i = 0; i < grid.length; i++) {
 			for (int j = 0; j < grid[0].length; j++) {
 				int randIndex = genRandom(0, gridObjs.size()-1);
-				grid[i][j] = new GridCell(gridObjs.get(randIndex).getCellType());
+				
+				CellType chosenType = gridObjs.get(randIndex).getCellType();
+				
+				if(chosenType == CellType.ROBOT){
+					robotI = i;
+					robotJ = j;
+				}
+				
+				if(chosenType == CellType.TELEPORTAL){
+					teleI = i;
+					teleJ = j;
+				}
+				
+				grid[i][j] = new GridCell(chosenType);
 				gridObjs.remove(randIndex);
 			}
 		}
 	}
-	
+
 	// Inserts all our objects (robot, rocks, ...) as grid cells in objects' list.
 	public void fillObjectsList(){
 		gridObjs.add(new GridCell(CellType.ROBOT));
@@ -76,6 +83,8 @@ public class Grid {
 	}
 	
 	public void printGrid(){
+		System.out.print("\n Grid now :- \n\n");
+		
 		for (int i = 0; i < grid.length; i++) {
 			for (int j = 0; j < grid[0].length; j++) {
 				CellType type = grid[i][j].getCellType();
@@ -108,13 +117,22 @@ public class Grid {
 			}
 			System.out.print("\n\n");
 		}
+		
+		System.out.println("-------------------------------------------------");
+		
 	}
 	
 	public int genRandom(int min, int max){
 		return min + (int) (Math.random()*max);
 	}
+	
+	// Main function for testing.
+	public static void main(String[] args) {
+		new Grid(3, 3);
+	}
+	
 
-	// Getters and setters
+	// Getters and setters.
 	public static int getM() {
 		return m;
 	}
@@ -147,8 +165,36 @@ public class Grid {
 		this.grid = grid;
 	}
 	
-	public static void main(String[] args) {
-		new Grid(3, 3);
+	public int getTeleI() {
+		return teleI;
+	}
+
+	public void setTeleI(int teleI) {
+		this.teleI = teleI;
+	}
+
+	public int getTeleJ() {
+		return teleJ;
+	}
+
+	public void setTeleJ(int teleJ) {
+		this.teleJ = teleJ;
+	}
+
+	public int getRobotI() {
+		return robotI;
+	}
+
+	public void setRobotI(int robotI) {
+		this.robotI = robotI;
+	}
+
+	public int getRobotJ() {
+		return robotJ;
+	}
+
+	public void setRobotJ(int robotJ) {
+		this.robotJ = robotJ;
 	}
 
 }
