@@ -84,7 +84,7 @@ public class GeneralSearch{
 						break;
 					
 					case AS:
-						expandedNode.add(newNode);
+						nodes.add(0,newNode);
 						break;
 				}
 			}
@@ -100,6 +100,7 @@ public class GeneralSearch{
 				break;
 				
 			case AS:
+				AStarSort();
 				break;
 				
 			default:
@@ -146,6 +147,22 @@ public class GeneralSearch{
 				}
 			}
 			expandedNode.add(0,expandedNode.remove(index));
+		}
+	}
+	
+	public void AStarSort(){
+		
+		for (int i = 0; i < nodes.size(); i++) {
+			int lowest = getHeuristic0(nodes.get(i))+ nodes.get(i).getCostFromRoot();
+			int index = i;
+			for (int j = i; j < nodes.size(); j++) {
+				int heuristic =getHeuristic0(nodes.get(j)) + nodes.get(j).getCostFromRoot();
+				if(heuristic<lowest){
+					lowest = heuristic;
+					index = j;
+				}
+			}
+			nodes.add(0,nodes.remove(index));
 		}
 	}
 	
