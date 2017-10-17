@@ -8,7 +8,7 @@ public class GeneralSearch{
 	ArrayList<Node> nodes;
 	ArrayList<Node> expandedNode;
 	Hashtable<State, Boolean> visitedStates; 
-	int IterativeLimit =3; 								//for testing
+	int IterativeLimit =0; 								//for testing
 	
 	public GeneralSearch(Problem problem, SearchStrategy strategy){
 		this.problem = problem;
@@ -27,11 +27,19 @@ public class GeneralSearch{
 			
 			Node targetNode = nodes.get(0);
 			State targetState = targetNode.getState();
-			nodes.remove(0);
 			
 			if(problem.goalTest(targetState)){
 				return targetNode;
 			}
+			
+			if(!strategy.equals(SearchStrategy.ID) || (strategy.equals(SearchStrategy.ID) && (IterativeLimit > targetNode.getDepth()|| (IterativeLimit == targetNode.getDepth() && nodes.size()>1)))){
+				nodes.remove(0);
+			}else
+			{
+				nodes.clear();
+				IterativeLimit++;
+			}
+
 			
 			// Handle repeated states.
 			if(visitedStates.get(targetState) != null){
@@ -41,6 +49,7 @@ public class GeneralSearch{
 				visitedStates.put(targetState, true);
 			}
 			
+			if(IterativeLimit != targetNode.getDepth()){
 			Hashtable<State, String> possibleNext = problem.transition(targetNode.getState());
 
 			for (State state : possibleNext.keySet()) {
@@ -71,7 +80,7 @@ public class GeneralSearch{
 						break;
 					
 					case ID:
-						expandedNode.add(0,newNode);
+						nodes.add(0,newNode);
 						break;
 					
 					case AS:
@@ -79,6 +88,7 @@ public class GeneralSearch{
 						break;
 				}
 			}
+		 }
 			switch(strategy){
 			case UC:
 				uniformSort();
@@ -88,13 +98,10 @@ public class GeneralSearch{
 				GreedyheuristicSort();
 				addExpanded();
 				break;
-			
-			case ID:
-				IterativeDeepening();
-				break;
-			
+				
 			case AS:
 				break;
+				
 			default:
 				break;
 		}	
