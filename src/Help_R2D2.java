@@ -46,9 +46,9 @@ public class Help_R2D2 extends Problem {
 						if(nextE.getCellType().equals(CellType.ROCK) && (currentState.getI()+2 < Grid.getM())){
 							GridCell nextE2 = grid.getGrid()[currentState.getI()+2][currentState.getJ()];
 							if(nextE2.getCellType().equals(CellType.GAP)){
-								current.setCellType(CellType.GAP);
-								nextE.setCellType(CellType.ROBOT);
-								nextE2.setCellType(CellType.ROCK);
+								grid.getGrid()[currentState.getI()][currentState.getJ()].setCellType(CellType.GAP);
+								grid.getGrid()[currentState.getI()+1][currentState.getJ()].setCellType(CellType.ROBOT);
+								grid.getGrid()[currentState.getI()+2][currentState.getJ()].setCellType(CellType.ROCK);
 								newState.setI(currentState.getI()+1);
 							}
 						}
