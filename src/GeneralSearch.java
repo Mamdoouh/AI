@@ -204,7 +204,9 @@ public class GeneralSearch{
 			int costi = Math.abs(rocki-i);
 			int costj = Math.abs(rockj-j);
 			
-			cost += costi+costj;
+			int costE = (int) Math.sqrt(Math.pow(costi, 2)+ Math.pow(costj, 2));
+			
+			cost += costE;
 		}	
 		return cost;
 	}
