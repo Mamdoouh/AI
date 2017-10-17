@@ -6,8 +6,9 @@ public class GeneralSearch{
 	Problem problem;
 	SearchStrategy strategy;
 	ArrayList<Node> nodes;
+	ArrayList<Node> expandedNode;
 	Hashtable<State, Boolean> visitedStates; 
-	int uniformLimit;
+	int IterativeLimit =3; 								//for testing
 	
 	public GeneralSearch(Problem problem, SearchStrategy strategy){
 		this.problem = problem;
@@ -43,6 +44,7 @@ public class GeneralSearch{
 			Hashtable<State, String> possibleNext = problem.transition(targetNode.getState());
 
 			for (State state : possibleNext.keySet()) {
+				expandedNode.clear();
 				// Create new node from the given state.
 				String operatorName = possibleNext.get(state);
 				int operatorCost = problem.getOperators().get(operatorName);
@@ -61,17 +63,19 @@ public class GeneralSearch{
 					
 					case UC:
 						nodes.add(newNode);
-						uniformSort();
 						break;
 					
 					case GR:
+						expandedNode.add(newNode);
+
 						break;
 					
 					case ID:
-						nodes.add(0,newNode);
+						expandedNode.add(0,newNode);
 						break;
 					
 					case AS:
+						expandedNode.add(newNode);
 						break;
 				}
 			}
@@ -81,16 +85,31 @@ public class GeneralSearch{
 				break;
 			
 			case GR:
+				GreedyheuristicSort();
+				addExpanded();
 				break;
 			
 			case ID:
+				IterativeDeepening();
 				break;
 			
 			case AS:
 				break;
+			default:
+				break;
+		}	
+	   }
+	}
+	
+	public void IterativeDeepening(){
+		
+		for (int i = 0; i < expandedNode.size(); i++) {
+			Node en = expandedNode.get(i);
+			if(en.getDepth()<IterativeLimit){
+				nodes.add(0,expandedNode.remove(i));
+			}
 		}
-			
-		}
+		
 	}
 	
 	public void uniformSort(){
@@ -104,6 +123,22 @@ public class GeneralSearch{
 				}
 			}
 			nodes.add(0,nodes.remove(index));
+		}
+	}
+	
+	public void GreedyheuristicSort(){
+		
+		for (int i = 0; i < expandedNode.size(); i++) {
+			int lowest = getHeuristic0(expandedNode.get(i));
+			int index = i;
+			for (int j = i; j < expandedNode.size(); j++) {
+				int heuristic =getHeuristic0(expandedNode.get(j));
+				if(heuristic<lowest){
+					lowest = heuristic;
+					index = j;
+				}
+			}
+			expandedNode.add(0,expandedNode.remove(index));
 		}
 	}
 	
@@ -130,6 +165,7 @@ public class GeneralSearch{
 		
 		return cost;
 	}
+	
 	public int getHeuristic1(Node node){
 		int cost =0;
 		State s = node.getState();
@@ -147,6 +183,12 @@ public class GeneralSearch{
 			cost += costi+costj;
 		}	
 		return cost;
+	}
+	
+	public void addExpanded(){
+		for (int i = 0; i < expandedNode.size(); i++) {
+			nodes.add(0,expandedNode.remove(i));
+		}
 	}
 	
 	
