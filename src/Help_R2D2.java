@@ -6,14 +6,16 @@ public class Help_R2D2 extends Problem {
 	private int gridM, gridN;
 
 	
-	public Help_R2D2(Hashtable<String, Integer> operators, State initialState) {
-		super(operators, initialState);
-
-		gridM = 3;
-		gridN = 3;
+	public Help_R2D2(Hashtable<String, Integer> operators) {
+		super(operators);
+		
+		gridM = 5;
+		gridN = 5;
 		grid = new Grid(gridM, gridN);
+		
+		State initial = new State(Grid.getRobotI(), Grid.getRobotJ(), Orientation.NORTH, Grid.getRocksLocation().size());
+		super.setInitialState(initial);
 	}
-
 	
 	public boolean goalTest(State currentState) {
 		return currentState.getRemainingPads() == 0
@@ -218,6 +220,8 @@ public class Help_R2D2 extends Problem {
 				break;
 		}
 		
+		//grid.printGrid();
+		System.out.println("Action: MoveForward");
 		return newState;
 	}
 
@@ -243,6 +247,7 @@ public class Help_R2D2 extends Problem {
 			break;
 		}
 
+		System.out.println("Action: RotateRight");
 		return newState;
 	}
 
@@ -268,6 +273,7 @@ public class Help_R2D2 extends Problem {
 			break;
 		}
 
+		System.out.println("Action: RotateLeft");
 		return newState;
 	}
 

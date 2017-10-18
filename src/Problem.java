@@ -6,8 +6,11 @@ public abstract class Problem{
 	private Hashtable<String, Integer> operators; //Name -> Cost
 	private State initialState;
 
-	public Problem(Hashtable<String, Integer> operators, State initialState){
+	public Problem(Hashtable<String, Integer> operators){
 		this.operators = operators;
+	}
+	
+	public void setInitialState(State initialState){
 		this.initialState = initialState;
 	}
 	

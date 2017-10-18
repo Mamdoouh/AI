@@ -32,6 +32,7 @@ public class Grid {
 		rocks = genRandom(1, (int)(gridSize*rocksMaxPercentage));
 		obstacles = genRandom(0, (int)(gridSize*obstaclesMaxPercentage));
 		gaps = gridSize - (rocks*2 + obstacles);
+		rocksLocation = new ArrayList<rockLocation>();
 
 		grid = new GridCell[m][n];
 		gridObjs = new ArrayList<>();
@@ -60,6 +61,7 @@ public class Grid {
 					teleI = i;
 					teleJ = j;
 				}
+				
 				if(chosenType == CellType.ROCK){
 					rockLocation location = new rockLocation(i,j);
 					rocksLocation.add(location);
@@ -177,7 +179,7 @@ public class Grid {
 	}
 
 	public void setTeleI(int teleI) {
-		this.teleI = teleI;
+		Grid.teleI = teleI;
 	}
 
 	public static int getTeleJ() {
@@ -185,7 +187,7 @@ public class Grid {
 	}
 
 	public void setTeleJ(int teleJ) {
-		this.teleJ = teleJ;
+		Grid.teleJ = teleJ;
 	}
 
 	public static int getRobotI() {
@@ -193,7 +195,7 @@ public class Grid {
 	}
 
 	public void setRobotI(int robotI) {
-		this.robotI = robotI;
+		Grid.robotI = robotI;
 	}
 
 	public static int getRobotJ() {
@@ -201,7 +203,7 @@ public class Grid {
 	}
 
 	public void setRobotJ(int robotJ) {
-		this.robotJ = robotJ;
+		Grid.robotJ = robotJ;
 	}
 	public static ArrayList<rockLocation> getRocksLocation() {
 		return rocksLocation;
