@@ -33,6 +33,6 @@ public abstract class Problem{
 	
 	// Abstract functions to be implemented by Help_R2D2.
 	public abstract boolean goalTest(State currentState);
-	public abstract Hashtable<State, String> transition(State currentState);
+	public abstract ArrayList<ResultingState> transition(State currentState);
 	
 }

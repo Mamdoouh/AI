@@ -37,9 +37,37 @@ public class Grid {
 		grid = new GridCell[m][n];
 		gridObjs = new ArrayList<>();
 		
-		fillObjectsList();
-		generateGrid();
+		//fillObjectsList();
+		//generateGrid();
+		
+		generateSolveableGrid();
 		printGrid();
+	}
+	
+	public void generateSolveableGrid(){
+		GridCell gap = new GridCell(CellType.GAP);
+		GridCell rock = new GridCell(CellType.ROCK);
+		GridCell pad = new GridCell(CellType.PAD);
+		GridCell robot = new GridCell(CellType.ROBOT);
+		GridCell tele = new GridCell(CellType.TELEPORTAL);
+		
+		grid[0][0] = gap;
+		grid[0][1] = robot;
+		grid[0][2] = gap;
+		grid[1][0] = gap;
+		grid[1][1] = rock;
+		grid[1][2] = pad;
+		grid[2][0] = gap;
+		grid[2][1] = tele;
+		grid[2][2] = gap;
+		
+		robotI = 0;
+		robotJ = 1;
+		
+		teleI = 2;
+		teleJ = 1;
+		
+		rocksLocation.add(new rockLocation(1, 1));
 	}
 	
 	// Constructs the grid by inserting all objects (including gaps) in random positions.
@@ -133,11 +161,6 @@ public class Grid {
 	
 	public int genRandom(int min, int max){
 		return min + (int) (Math.random()*max);
-	}
-	
-	// Main function for testing.
-	public static void main(String[] args) {
-		new Grid(3, 3);
 	}
 	
 

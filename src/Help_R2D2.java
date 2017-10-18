@@ -1,20 +1,30 @@
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class Help_R2D2 extends Problem {
 
 	private Grid grid;
 	private int gridM, gridN;
-
 	
-	public Help_R2D2(Hashtable<String, Integer> operators) {
-		super(operators);
+	
+	public Help_R2D2() {
+		super(generateOperators());
 		
-		gridM = 5;
-		gridN = 5;
+		gridM = 3;
+		gridN = 3;
 		grid = new Grid(gridM, gridN);
 		
 		State initial = new State(Grid.getRobotI(), Grid.getRobotJ(), Orientation.NORTH, Grid.getRocksLocation().size());
 		super.setInitialState(initial);
+	}
+	
+	public static Hashtable<String, Integer> generateOperators(){
+		Hashtable<String, Integer> operators = new Hashtable<>();
+		operators.put("MoveForward", 2);
+		operators.put("RotateLeft", 1);
+		operators.put("RotateRight", 1);
+		
+		return operators;
 	}
 	
 	public boolean goalTest(State currentState) {
@@ -22,19 +32,18 @@ public class Help_R2D2 extends Problem {
 				&& currentState.getI() == Grid.getTeleI()
 				&& currentState.getJ() == Grid.getTeleJ();
 	}
-
 	
-	public Hashtable<State, String> transition(State currentState) {
-		// Map every possible next state to the operator that generated it.
-		Hashtable<State, String> possibleNextStates = new Hashtable<>();
+	
+	public ArrayList<ResultingState> transition(State currentState) {
+		// Returns every possible next state along with the operator associated with it.
+		ArrayList<ResultingState> possibleNextStates = new ArrayList<>();
 
-		possibleNextStates.put(moveForward(currentState), "MoveForward");
-		possibleNextStates.put(rotateRight(currentState), "RotateRight");
-		possibleNextStates.put(rotateLeft(currentState), "RotateLeft");
+		possibleNextStates.add(new ResultingState(moveForward(currentState), "MoveForward"));
+		possibleNextStates.add(new ResultingState(rotateRight(currentState), "RotateRight"));
+		possibleNextStates.add(new ResultingState(rotateLeft(currentState), "RotateLeft"));
 
 		return possibleNextStates;
 	}
-
 	
 	public State moveForward (State currentState){
 		State newState = currentState.copyState();
@@ -221,7 +230,7 @@ public class Help_R2D2 extends Problem {
 		}
 		
 		//grid.printGrid();
-		System.out.println("Action: MoveForward");
+		//System.out.print("Action: MoveForward ->  ");
 		return newState;
 	}
 
@@ -247,7 +256,7 @@ public class Help_R2D2 extends Problem {
 			break;
 		}
 
-		System.out.println("Action: RotateRight");
+		//System.out.print("Action: RotateRight ->  ");
 		return newState;
 	}
 
@@ -273,7 +282,7 @@ public class Help_R2D2 extends Problem {
 			break;
 		}
 
-		System.out.println("Action: RotateLeft");
+		//System.out.print("Action: RotateLeft ->  ");
 		return newState;
 	}
 

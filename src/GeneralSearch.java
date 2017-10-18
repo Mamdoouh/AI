@@ -1,6 +1,6 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.Hashtable;
 
 public class GeneralSearch {
 
@@ -8,13 +8,16 @@ public class GeneralSearch {
 	SearchStrategy strategy;
 	ArrayList<Node> nodes;
 	ArrayList<Node> expandedNode;
-	Hashtable<State, Boolean> visitedStates;
-	int IterativeLimit = 0; // For testing
+	ArrayList<State> visitedStates;
+	
+	// For testing
+	int IterativeLimit = 0;
+	int printLimit = 15;
 
 	public GeneralSearch(Problem problem, SearchStrategy strategy) {
 		this.problem = problem;
 		this.strategy = strategy;
-		this.visitedStates = new Hashtable<>();
+		this.visitedStates = new ArrayList<>();
 		this.nodes = new ArrayList<>();
 		this.expandedNode = new ArrayList<>();
 	}
@@ -22,10 +25,18 @@ public class GeneralSearch {
 	public Node search() {
 		Node root = new Node(problem.getInitialState(), null, null, 0, 0);
 		nodes.add(root);
+		
+		// FOR DEBUGGING
+		if(printLimit > 0){
+			System.out.println(Arrays.toString(nodes.toArray()));
+			printLimit--;
+		}
+		
 
 		while (true) {
 			if (nodes.isEmpty()) {
 				// No solution.
+				System.out.println("No solution");
 				return null;
 			}
 
@@ -33,6 +44,7 @@ public class GeneralSearch {
 			State targetState = targetNode.getState();
 
 			if (problem.goalTest(targetState)) {
+				System.out.println("Found goal: " + targetNode.toString());
 				return targetNode;
 			}
 
@@ -42,25 +54,28 @@ public class GeneralSearch {
 				nodes.remove(0);
 			} 
 			else {
+				System.out.println("Clearing queue ...");
 				nodes.clear();
 				IterativeLimit++;
 			}
 
 			// Handle repeated states.
-//			if (visitedStates.get(targetState) != null) {
-//				continue;
-//			} 
-//			else {
-//				visitedStates.put(targetState, true);
-//			}
+			if (visitedStates.contains(targetState)) {
+				continue;
+			} 
+			else {
+				visitedStates.add(targetState);
+			}
 
 			if (!strategy.equals(SearchStrategy.ID) ||  (strategy.equals(SearchStrategy.ID) && IterativeLimit != targetNode.getDepth())) {
-				Hashtable<State, String> possibleNext = problem.transition(targetNode.getState());
+				ArrayList<ResultingState> possibleNext = problem.transition(targetNode.getState());
 
-				for (State state : possibleNext.keySet()) {
+				for (ResultingState resState : possibleNext) {
 					expandedNode.clear();
+					
 					// Create new node from the given state.
-					String operatorName = possibleNext.get(state);
+					State state = resState.getState();
+					String operatorName = resState.getOperator();
 					int operatorCost = problem.getOperators().get(operatorName);
 					int totalCost = targetNode.getCostFromRoot() + operatorCost;
 					int parentDepth = targetNode.getDepth();
@@ -93,6 +108,13 @@ public class GeneralSearch {
 							break;
 					}
 				}
+				
+				// FOR DEBUGGING
+				if(printLimit > 0){
+					System.out.println(Arrays.toString(nodes.toArray()));
+					printLimit--;
+				}
+				
 			}
 			
 			switch (strategy) {

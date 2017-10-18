@@ -15,6 +15,11 @@ public class Node {
 		this.depth = depth;
 	}
 	
+	@Override
+	public String toString() {
+		return state.toString();
+	}
+	
 	
 	// Getters and setters
 	public State getState() {

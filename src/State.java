@@ -5,6 +5,11 @@ public class State {
 	private Orientation orientation;
 	private int remainingPads;
 	
+	@Override
+	public String toString() {
+		return "<" + i + ", " + j + ", " + orientation + ", " + remainingPads + ">";
+	}
+	
 	public int getRemainingPads() {
 		return remainingPads;
 	}
