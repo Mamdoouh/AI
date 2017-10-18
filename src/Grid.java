@@ -14,7 +14,7 @@ public class Grid {
 	private int gaps;
 	private ArrayList<GridCell> gridObjs;
 	private static ArrayList<rockLocation> rocksLocation;
-	private GridCell [][] grid = null;
+    static GridCell [][] grid = null;
 	
 	// Save robot and teleportal chosen locations
 	private static int teleI;
@@ -27,6 +27,8 @@ public class Grid {
 	
 	public Grid(int m, int n){
 		// We reserve 2 cells for the robot and the teleportal.
+		Grid.m = m;
+		Grid.n = n;
 		int gridSize = m*n - 2;
 		
 		rocks = genRandom(1, (int)(gridSize*rocksMaxPercentage));
@@ -119,7 +121,7 @@ public class Grid {
 		}
 	}
 	
-	public void printGrid(){
+	public static void printGrid(){
 		System.out.print("\n Grid now :- \n\n");
 		
 		for (int i = 0; i < grid.length; i++) {
@@ -217,7 +219,7 @@ public class Grid {
 		return robotI;
 	}
 
-	public void setRobotI(int robotI) {
+	public static void setRobotI(int robotI) {
 		Grid.robotI = robotI;
 	}
 
@@ -225,7 +227,7 @@ public class Grid {
 		return robotJ;
 	}
 
-	public void setRobotJ(int robotJ) {
+	public static void setRobotJ(int robotJ) {
 		Grid.robotJ = robotJ;
 	}
 	public static ArrayList<rockLocation> getRocksLocation() {

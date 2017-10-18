@@ -19,4 +19,10 @@ public class rockLocation {
 		this.i =i;
 		this.j=j;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		rockLocation location = (rockLocation) obj;
+		return i == location.i && j == location.j;
+	}
 }

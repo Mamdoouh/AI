@@ -12,7 +12,7 @@ public class GeneralSearch {
 	
 	// For testing
 	int IterativeLimit = 0;
-	int printLimit = 15;
+	int printLimit = 25;
 
 	public GeneralSearch(Problem problem, SearchStrategy strategy) {
 		this.problem = problem;
@@ -20,6 +20,17 @@ public class GeneralSearch {
 		this.visitedStates = new ArrayList<>();
 		this.nodes = new ArrayList<>();
 		this.expandedNode = new ArrayList<>();
+	}
+	
+	public void updateRockLocation(int oldI, int oldJ, int newI, int newJ){
+		
+		rockLocation x = new rockLocation(oldI, oldJ);
+		
+		Grid.getRocksLocation().remove(x);
+		x.setI(newI);
+		x.setJ(newJ);
+		Grid.getRocksLocation().add(x);
+		
 	}
 
 	public Node search() {
@@ -52,7 +63,59 @@ public class GeneralSearch {
 					|| (strategy.equals(SearchStrategy.ID) && (IterativeLimit > targetNode.getDepth()
 							|| (IterativeLimit == targetNode.getDepth() && nodes.size() > 1)))) {
 				nodes.remove(0);
-			} 
+				
+				// Update grid
+				int curI = targetState.getI();
+				int curJ = targetState.getJ();
+				
+				Grid.setRobotI(curI);
+				Grid.setRobotJ(curJ);
+				
+				if(targetState.isWillMove()){
+					Grid.grid[curI][curJ].setCellType(CellType.ROBOT);
+					
+					switch(targetState.getOrientation()){
+						case NORTH:
+							Grid.grid[curI+1][curJ].setCellType(CellType.GAP);
+							
+							if (targetState.isWillPushRock()){
+								Grid.grid[curI-1][curJ].setCellType(CellType.ROCK);
+								updateRockLocation(curI, curJ, curI-1, curJ);	
+							}
+							break;
+							
+						case SOUTH:
+							Grid.grid[curI-1][curJ].setCellType(CellType.GAP);
+						
+							if (targetState.isWillPushRock()){
+								Grid.grid[curI+1][curJ].setCellType(CellType.ROCK);
+								updateRockLocation(curI, curJ, curI+1, curJ);
+							}
+							break;
+						
+						case EAST:
+							Grid.grid[curI][curJ-1].setCellType(CellType.GAP);
+						
+							if (targetState.isWillPushRock()){
+								Grid.grid[curI][curJ+1].setCellType(CellType.ROCK);
+								updateRockLocation(curI, curJ, curI, curJ+1);
+							}
+							break;
+						
+						case WEST:
+							Grid.grid[curI][curJ+1].setCellType(CellType.GAP);
+
+							if (targetState.isWillPushRock()){
+								Grid.grid[curI][curJ-1].setCellType(CellType.ROCK);
+								updateRockLocation(curI, curJ, curI, curJ-1);
+							}
+							break;					
+					}
+					
+				}
+				
+ 			}
+			
 			else {
 				System.out.println("Clearing queue ...");
 				nodes.clear();
