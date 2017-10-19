@@ -161,12 +161,35 @@ public class Grid {
 		
 	}
 	
+	public static GridCell[][] getGridCopy(){
+		GridCell[][] copy = new GridCell[m][n];
+		
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				copy[i][j] = grid[i][j];
+			}
+		}
+		
+		return copy;
+	}
+
 	public int genRandom(int min, int max){
 		return min + (int) (Math.random()*max);
 	}
 	
+	public static boolean compareGrids(GridCell[][] g1, GridCell[][] g2) {
+		for (int i = 0; i < Grid.getM(); i++) {
+			for (int j = 0; j < Grid.getN(); j++) {
+				if(g1[i][j] != g2[i][j]){
+					return false;
+				}
+			}
+		}
 
-	// Getters and setters.
+		return true;
+	}
+
+	// Getters and setters
 	public static int getM() {
 		return m;
 	}

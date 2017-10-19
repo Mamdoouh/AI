@@ -3,18 +3,18 @@ import java.util.Hashtable;
 
 public class Help_R2D2 extends Problem {
 
-	private Grid grid;
 	private int gridM, gridN;
-	
 	
 	public Help_R2D2() {
 		super(generateOperators());
 		
 		gridM = 3;
 		gridN = 3;
-		grid = new Grid(gridM, gridN);
+		new Grid(gridM, gridN);
 		
-		State initial = new State(Grid.getRobotI(), Grid.getRobotJ(), Orientation.NORTH, Grid.getRocksLocation().size(), false, false,Grid.getRocksLocation());
+		State initial = new State(Grid.getRobotI(), Grid.getRobotJ(), Orientation.NORTH, 
+				Grid.getRocksLocation().size(), false, false, Grid.getGridCopy()); 
+		
 		super.setInitialState(initial);
 	}
 	
@@ -87,7 +87,7 @@ public class Help_R2D2 extends Problem {
 		boolean canCoverPad = false;
 		
 		if(currentI-1 >= 0){
-			GridCell next = grid.getGrid()[currentI-1][currentJ];
+			GridCell next = currentState.getGrid()[currentI-1][currentJ];
 			
 			if(next.getCellType().equals(CellType.GAP)){
 				// Next cell is a gap
@@ -96,19 +96,15 @@ public class Help_R2D2 extends Problem {
 			
 			else if(next.getCellType().equals(CellType.ROCK) && (currentI-2 >= 0)){
 				// Next cell is a rock and there is a cell after it
-				GridCell afterRock = grid.getGrid()[currentI-2][currentJ];
+				GridCell afterRock = currentState.getGrid()[currentI-2][currentJ];
 				if(afterRock.getCellType().equals(CellType.GAP)){
-					System.out.println("1_N");
 					canMove = true;
 					canPush = true;
-					newState.updateRockLocation(currentI, currentJ, currentI-1, currentJ);	
 				}
 				else if(afterRock.getCellType().equals(CellType.PAD)){
-					System.out.println("2_N");
 					canMove = true;
 					canPush = true;
 					canCoverPad = true;
-					newState.updateRockLocation(currentI, currentJ, currentI-1, currentJ);	
 
 				}
 			}
@@ -147,7 +143,7 @@ public class Help_R2D2 extends Problem {
 		boolean canCoverPad = false;
 		
 		if(currentI+1 < Grid.getM()){
-			GridCell next = grid.getGrid()[currentI+1][currentJ];
+			GridCell next = currentState.getGrid()[currentI+1][currentJ];
 			
 			if(next.getCellType().equals(CellType.GAP)){
 				// Next cell is a gap
@@ -156,19 +152,15 @@ public class Help_R2D2 extends Problem {
 			
 			else if(next.getCellType().equals(CellType.ROCK) && (currentI+2 < Grid.getM())){
 				// Next cell is a rock and there is a cell after it
-				GridCell afterRock = grid.getGrid()[currentI+2][currentJ];
+				GridCell afterRock = currentState.getGrid()[currentI+2][currentJ];
 				if(afterRock.getCellType().equals(CellType.GAP)){
-					System.out.println("1_S");
 					canMove = true;
 					canPush = true;
-					newState.updateRockLocation(currentI, currentJ, currentI+1, currentJ);	
 				}
 				else if(afterRock.getCellType().equals(CellType.PAD)){
-					System.out.println("2_S");
 					canMove = true;
 					canPush = true;
 					canCoverPad = true;
-					newState.updateRockLocation(currentI, currentJ, currentI+1, currentJ);	
 
 				}
 			}
@@ -207,7 +199,7 @@ public class Help_R2D2 extends Problem {
 		boolean canCoverPad = false;
 		
 		if(currentJ+1 < Grid.getN()){
-			GridCell next = grid.getGrid()[currentI][currentJ+1];
+			GridCell next = currentState.getGrid()[currentI][currentJ+1];
 			
 			if(next.getCellType().equals(CellType.GAP)){
 				// Next cell is a gap
@@ -216,22 +208,18 @@ public class Help_R2D2 extends Problem {
 			
 			else if(next.getCellType().equals(CellType.ROCK) && (currentJ+2 < Grid.getN())){
 				// Next cell is a rock and there is a cell after it
-				GridCell afterRock = grid.getGrid()[currentI][currentJ+2];
+				GridCell afterRock = currentState.getGrid()[currentI][currentJ+2];
 				
 				if(afterRock.getCellType().equals(CellType.GAP)){
-					System.out.println("1_E");
 					canMove = true;
 					canPush = true;
-					newState.updateRockLocation(currentI, currentJ, currentI, currentJ+1);
 					
 
 				}
 				else if(afterRock.getCellType().equals(CellType.PAD)){
-					System.out.println("2_E");
 					canMove = true;
 					canPush = true;
 					canCoverPad = true;
-					newState.updateRockLocation(currentI, currentJ, currentI, currentJ+1);
 
 				}
 			}
@@ -270,7 +258,7 @@ public class Help_R2D2 extends Problem {
 		boolean canCoverPad = false;
 		
 		if(currentJ-1 >= 0){
-			GridCell next = grid.getGrid()[currentI][currentJ-1];
+			GridCell next = currentState.getGrid()[currentI][currentJ-1];
 			
 			if(next.getCellType().equals(CellType.GAP)){
 				// Next cell is a gap
@@ -279,21 +267,16 @@ public class Help_R2D2 extends Problem {
 			
 			else if(next.getCellType().equals(CellType.ROCK) && (currentJ-2 >= 0)){
 				// Next cell is a rock and there is a cell after it
-				GridCell afterRock = grid.getGrid()[currentI][currentJ-2];
+				GridCell afterRock = currentState.getGrid()[currentI][currentJ-2];
 				if(afterRock.getCellType().equals(CellType.GAP)){
-					System.out.println("1_W");
 					canMove = true;
 					canPush = true;
-					newState.updateRockLocation(currentI, currentJ, currentI, currentJ-1);
 
 				}
 				else if(afterRock.getCellType().equals(CellType.PAD)){
-					System.out.println("2_W");
 					canMove = true;
 					canPush = true;
 					canCoverPad = true;
-					newState.updateRockLocation(currentI, currentJ, currentI, currentJ-1);
-
 				}
 			}
 			
@@ -340,7 +323,6 @@ public class Help_R2D2 extends Problem {
 			break;
 		}
 
-		//System.out.print("Action: RotateRight ->  ");
 		newState.setWillMove(false);
 		return newState;
 	}

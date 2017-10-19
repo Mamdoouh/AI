@@ -30,6 +30,7 @@ public class GeneralSearch {
 		// FOR DEBUGGING
 		if(printLimit > 0){
 			System.out.println(Arrays.toString(nodes.toArray()));
+			System.out.println();
 			printLimit--;
 		}
 		
@@ -58,42 +59,39 @@ public class GeneralSearch {
 				int curI = targetState.getI();
 				int curJ = targetState.getJ();
 				
-				Grid.setRobotI(curI);
-				Grid.setRobotJ(curJ);
-				
 				if(targetState.isWillMove()){
-					Grid.grid[curI][curJ].setCellType(CellType.ROBOT);
+					targetState.updateCell(curI, curJ, CellType.ROBOT);
 					
 					switch(targetState.getOrientation()){
 						case NORTH:
-							Grid.grid[curI+1][curJ].setCellType(CellType.GAP);
+							targetState.updateCell(curI+1, curJ, CellType.GAP);
 							
 							if (targetState.isWillPushRock()){
-								Grid.grid[curI-1][curJ].setCellType(CellType.ROCK);
+								targetState.updateCell(curI-1, curJ, CellType.ROCK);
 							}
 							break;
 							
 						case SOUTH:
-							Grid.grid[curI-1][curJ].setCellType(CellType.GAP);
+							targetState.updateCell(curI-1, curJ, CellType.GAP);
 						
 							if (targetState.isWillPushRock()){
-								Grid.grid[curI+1][curJ].setCellType(CellType.ROCK);
+								targetState.updateCell(curI+1, curJ, CellType.ROCK);
 							}
 							break;
 						
 						case EAST:
-							Grid.grid[curI][curJ-1].setCellType(CellType.GAP);
+							targetState.updateCell(curI, curJ-1, CellType.GAP);
 						
 							if (targetState.isWillPushRock()){
-								Grid.grid[curI][curJ+1].setCellType(CellType.ROCK);
+								targetState.updateCell(curI, curJ+1, CellType.ROCK);
 							}
 							break;
 						
 						case WEST:
-							Grid.grid[curI][curJ+1].setCellType(CellType.GAP);
+							targetState.updateCell(curI, curJ+1, CellType.GAP);
 
 							if (targetState.isWillPushRock()){
-								Grid.grid[curI][curJ-1].setCellType(CellType.ROCK);
+								targetState.updateCell(curI, curJ-1, CellType.ROCK);
 							}
 							break;					
 					}
@@ -109,12 +107,12 @@ public class GeneralSearch {
 			}
 
 			// Handle repeated states.
-			if (visitedStates.contains(targetState)) {
-				continue;
-			} 
-			else {
-				visitedStates.add(targetState);
-			}
+//			if (visitedStates.contains(targetState)) {
+//				continue;
+//			} 
+//			else {
+//				visitedStates.add(targetState);
+//			}
 
 			if (!strategy.equals(SearchStrategy.ID) ||  (strategy.equals(SearchStrategy.ID) && IterativeLimit != targetNode.getDepth())) {
 				ArrayList<ResultingState> possibleNext = problem.transition(targetNode.getState());
@@ -124,6 +122,8 @@ public class GeneralSearch {
 					
 					// Create new node from the given state.
 					State state = resState.getState();
+					state.setGrid(targetNode.getState().getGrid());
+					
 					String operatorName = resState.getOperator();
 					int operatorCost = problem.getOperators().get(operatorName);
 					int totalCost = targetNode.getCostFromRoot() + operatorCost;
@@ -132,7 +132,18 @@ public class GeneralSearch {
 
 					switch (strategy) {
 						case BF:
-							nodes.add(newNode);
+							
+							boolean present = false;
+							for (Node n : nodes) {
+								if(n.getState().equals(state)){
+									present = true;
+								}
+							}
+							
+							if(!present){
+								nodes.add(newNode);
+							}
+
 							break;
 	
 						case DF:
@@ -161,6 +172,7 @@ public class GeneralSearch {
 				// FOR DEBUGGING
 				if(printLimit > 0){
 					System.out.println(Arrays.toString(nodes.toArray()));
+					System.out.println();
 					printLimit--;
 				}
 				

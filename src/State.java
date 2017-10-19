@@ -1,14 +1,11 @@
-import java.util.ArrayList;
-
 
 public class State {
 
 	private int i, j;
 	private Orientation orientation;
 	private int remainingPads;
-	private ArrayList<rockLocation> rocksLocation = new ArrayList<rockLocation>();
+	private GridCell[][] myGrid;
 
-	
 	// Whether transition to this state results in moving or not
 	private boolean willMove;
 	
@@ -17,46 +14,61 @@ public class State {
 	
 	
 	// Constructor
-	public State(int i, int j, Orientation orientation, int remainingPads, boolean willPushRock, boolean willMove,ArrayList<rockLocation> rockLocation){
+	public State(int i, int j, Orientation orientation, int remainingPads, boolean willPushRock, 
+			boolean willMove, GridCell[][] parentGrid){
+		
 		this.i = i;
 		this.j = j;
 		this.orientation = orientation;
 		this.remainingPads = remainingPads;
 		this.willPushRock = willPushRock;
 		this.willMove = willMove;
-		this.rocksLocation = rockLocation;
+		this.myGrid = parentGrid;
 	}
 	
-	public  ArrayList<rockLocation> getRocksLocation() {
-		return rocksLocation;
+	
+	public void updateCell(int i, int j, CellType newType){
+		myGrid[i][j].setCellType(newType);
+	}
+	
+	public GridCell[][] getGrid() {
+		return myGrid;
 	}
 
-	public void setRocksLocation(ArrayList<rockLocation> rocksLocation) {
-		this.rocksLocation = rocksLocation;
+	public void setGrid(GridCell[][] myGrid) {
+		this.myGrid = myGrid;
 	}
 
 	// Helper methods
 	public State copyState(){
-		return new State(getI(), getJ(), getOrientation(), getRemainingPads(), isWillPushRock(), isWillMove(),getRocksLocation());
+		return new State(getI(), getJ(), getOrientation(), getRemainingPads(), isWillPushRock(), 
+				isWillMove(), getGrid());
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
 		State s = (State) obj;
-		return i == s.i && j == s.j && orientation == s.orientation && remainingPads == s.remainingPads 
-				&& willPushRock == s.isWillPushRock() && willMove == s.isWillMove();
+		
+		return  i == s.i && 
+				j == s.j && 
+			    orientation == s.orientation && 
+			    remainingPads == s.remainingPads && 
+			    willPushRock == s.isWillPushRock() && 
+			    willMove == s.isWillMove() && 
+			    Grid.compareGrids(myGrid, s.getGrid());
 	}
 	
-	public void updateRockLocation(int oldI, int oldJ, int newI, int newJ){
-		
-		rockLocation x = new rockLocation(oldI, oldJ);
-		
-		rocksLocation.remove(x);
-		x.setI(newI);
-		x.setJ(newJ);
-		rocksLocation.add(x);
-		
-	}
+//	public void updateRockLocation(int oldI, int oldJ, int newI, int newJ){
+//		
+//		rockLocation x = new rockLocation(oldI, oldJ);
+//		
+//		rocksLocation.remove(x);
+//		x.setI(newI);
+//		x.setJ(newJ);
+//		rocksLocation.add(x);
+//		
+//	}
+	
 	@Override
 	public String toString() {
 		return "<" + i + ", " + j + ", " + orientation + ", " + remainingPads + ", " + willPushRock + ", " + willMove + ">";
