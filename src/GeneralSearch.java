@@ -28,11 +28,11 @@ public class GeneralSearch {
 		nodes.add(root);
 		
 		// FOR DEBUGGING
-		if(printLimit > 0){
-			System.out.println(Arrays.toString(nodes.toArray()));
-			System.out.println();
-			printLimit--;
-		}
+		//if(printLimit > 0){
+			//System.out.println(Arrays.toString(nodes.toArray()));
+			//System.out.println();
+			//printLimit--;
+		//}
 		
 
 		while (true) {
@@ -60,37 +60,52 @@ public class GeneralSearch {
 				int curJ = targetState.getJ();
 				
 				if(targetState.isWillMove()){
-					targetState.updateCell(curI, curJ, CellType.ROBOT);
 					
 					switch(targetState.getOrientation()){
 						case NORTH:
 							targetState.updateCell(curI+1, curJ, CellType.GAP);
-							
+							targetState.updateCell(curI, curJ, CellType.ROBOT);
+
 							if (targetState.isWillPushRock()){
+								targetState.printGrid();
+
 								targetState.updateCell(curI-1, curJ, CellType.ROCK);
+
 							}
 							break;
 							
 						case SOUTH:
 							targetState.updateCell(curI-1, curJ, CellType.GAP);
-						
+
+							targetState.updateCell(curI, curJ, CellType.ROBOT);
+
 							if (targetState.isWillPushRock()){
+								targetState.printGrid();
+
 								targetState.updateCell(curI+1, curJ, CellType.ROCK);
 							}
 							break;
 						
 						case EAST:
 							targetState.updateCell(curI, curJ-1, CellType.GAP);
+
+							targetState.updateCell(curI, curJ, CellType.ROBOT);
 						
 							if (targetState.isWillPushRock()){
+								targetState.printGrid();
+
 								targetState.updateCell(curI, curJ+1, CellType.ROCK);
 							}
 							break;
 						
 						case WEST:
 							targetState.updateCell(curI, curJ+1, CellType.GAP);
+							
+							targetState.updateCell(curI, curJ, CellType.ROBOT);
 
 							if (targetState.isWillPushRock()){
+								targetState.printGrid();
+
 								targetState.updateCell(curI, curJ-1, CellType.ROCK);
 							}
 							break;					
@@ -133,16 +148,16 @@ public class GeneralSearch {
 					switch (strategy) {
 						case BF:
 							
-							boolean present = false;
-							for (Node n : nodes) {
-								if(n.getState().equals(state)){
-									present = true;
-								}
-							}
-							
-							if(!present){
+//							boolean present = false;
+//							for (Node n : nodes) {
+//								if(n.getState().equals(state)){
+//									present = true;
+//								}
+//							}
+//							
+//							if(!present){
 								nodes.add(newNode);
-							}
+//							}
 
 							break;
 	
@@ -170,11 +185,11 @@ public class GeneralSearch {
 				}
 				
 				// FOR DEBUGGING
-				if(printLimit > 0){
-					System.out.println(Arrays.toString(nodes.toArray()));
-					System.out.println();
-					printLimit--;
-				}
+//				if(printLimit > 0){
+//					System.out.println(Arrays.toString(nodes.toArray()));
+//					System.out.println();
+//					printLimit--;
+//				}
 				
 			}
 			

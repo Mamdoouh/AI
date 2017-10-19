@@ -1,4 +1,5 @@
 
+
 public class State {
 
 	private int i, j;
@@ -118,5 +119,43 @@ public class State {
 	public void setOrientation(Orientation orientation) {
 		this.orientation = orientation;
 	}
-	
+	public void printGrid(){
+		System.out.print("\n Grid now :- \n\n");
+		
+		for (int i = 0; i < myGrid.length; i++) {
+			for (int j = 0; j < myGrid[0].length; j++) {
+				CellType type = myGrid[i][j].getCellType();
+				
+				switch(type){
+		            case ROBOT: 
+		                System.out.print("  ROB  ");
+		                break;
+		               
+		            case TELEPORTAL: 
+		                System.out.print("  TEL  ");
+		                break;
+		                
+		            case OBSTACLE: 
+		                System.out.print("  OBS  ");
+		                break;
+		                
+		            case ROCK: 
+		                System.out.print("  ROC  ");
+		                break;
+		            
+		            case PAD: 
+		                System.out.print("  PAD  ");
+		                break;
+		                
+		            case GAP: 
+		                System.out.print("  GAP  ");
+		                break;
+				}
+			}
+			System.out.print("\n\n");
+		}
+		
+		System.out.println("-------------------------------------------------");
+		
+	}
 }
