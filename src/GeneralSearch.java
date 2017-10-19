@@ -12,7 +12,7 @@ public class GeneralSearch {
 	
 	// For testing
 	int IterativeLimit = 0;
-	int printLimit = 25;
+	int printLimit = 30;
 
 	public GeneralSearch(Problem problem, SearchStrategy strategy) {
 		this.problem = problem;
@@ -22,16 +22,6 @@ public class GeneralSearch {
 		this.expandedNode = new ArrayList<>();
 	}
 	
-	public void updateRockLocation(int oldI, int oldJ, int newI, int newJ){
-		
-		rockLocation x = new rockLocation(oldI, oldJ);
-		
-		Grid.getRocksLocation().remove(x);
-		x.setI(newI);
-		x.setJ(newJ);
-		Grid.getRocksLocation().add(x);
-		
-	}
 
 	public Node search() {
 		Node root = new Node(problem.getInitialState(), null, null, 0, 0);
@@ -80,7 +70,6 @@ public class GeneralSearch {
 							
 							if (targetState.isWillPushRock()){
 								Grid.grid[curI-1][curJ].setCellType(CellType.ROCK);
-								updateRockLocation(curI, curJ, curI-1, curJ);	
 							}
 							break;
 							
@@ -89,7 +78,6 @@ public class GeneralSearch {
 						
 							if (targetState.isWillPushRock()){
 								Grid.grid[curI+1][curJ].setCellType(CellType.ROCK);
-								updateRockLocation(curI, curJ, curI+1, curJ);
 							}
 							break;
 						
@@ -98,7 +86,6 @@ public class GeneralSearch {
 						
 							if (targetState.isWillPushRock()){
 								Grid.grid[curI][curJ+1].setCellType(CellType.ROCK);
-								updateRockLocation(curI, curJ, curI, curJ+1);
 							}
 							break;
 						
@@ -107,7 +94,6 @@ public class GeneralSearch {
 
 							if (targetState.isWillPushRock()){
 								Grid.grid[curI][curJ-1].setCellType(CellType.ROCK);
-								updateRockLocation(curI, curJ, curI, curJ-1);
 							}
 							break;					
 					}

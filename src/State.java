@@ -1,9 +1,13 @@
+import java.util.ArrayList;
+
 
 public class State {
 
 	private int i, j;
 	private Orientation orientation;
 	private int remainingPads;
+	private ArrayList<rockLocation> rocksLocation = new ArrayList<rockLocation>();
+
 	
 	// Whether transition to this state results in moving or not
 	private boolean willMove;
@@ -13,18 +17,27 @@ public class State {
 	
 	
 	// Constructor
-	public State(int i, int j, Orientation orientation, int remainingPads, boolean willPushRock, boolean willMove){
+	public State(int i, int j, Orientation orientation, int remainingPads, boolean willPushRock, boolean willMove,ArrayList<rockLocation> rockLocation){
 		this.i = i;
 		this.j = j;
 		this.orientation = orientation;
 		this.remainingPads = remainingPads;
 		this.willPushRock = willPushRock;
 		this.willMove = willMove;
+		this.rocksLocation = rockLocation;
 	}
 	
+	public  ArrayList<rockLocation> getRocksLocation() {
+		return rocksLocation;
+	}
+
+	public void setRocksLocation(ArrayList<rockLocation> rocksLocation) {
+		this.rocksLocation = rocksLocation;
+	}
+
 	// Helper methods
 	public State copyState(){
-		return new State(getI(), getJ(), getOrientation(), getRemainingPads(), isWillPushRock(), isWillMove());
+		return new State(getI(), getJ(), getOrientation(), getRemainingPads(), isWillPushRock(), isWillMove(),getRocksLocation());
 	}
 	
 	@Override
@@ -34,6 +47,16 @@ public class State {
 				&& willPushRock == s.isWillPushRock() && willMove == s.isWillMove();
 	}
 	
+	public void updateRockLocation(int oldI, int oldJ, int newI, int newJ){
+		
+		rockLocation x = new rockLocation(oldI, oldJ);
+		
+		rocksLocation.remove(x);
+		x.setI(newI);
+		x.setJ(newJ);
+		rocksLocation.add(x);
+		
+	}
 	@Override
 	public String toString() {
 		return "<" + i + ", " + j + ", " + orientation + ", " + remainingPads + ", " + willPushRock + ", " + willMove + ">";

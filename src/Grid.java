@@ -13,7 +13,7 @@ public class Grid {
 	private int rocks;
 	private int gaps;
 	private ArrayList<GridCell> gridObjs;
-	private static ArrayList<rockLocation> rocksLocation;
+	private static ArrayList<rockLocation> initialRocksLocation;
     static GridCell [][] grid = null;
 	
 	// Save robot and teleportal chosen locations
@@ -34,7 +34,7 @@ public class Grid {
 		rocks = genRandom(1, (int)(gridSize*rocksMaxPercentage));
 		obstacles = genRandom(0, (int)(gridSize*obstaclesMaxPercentage));
 		gaps = gridSize - (rocks*2 + obstacles);
-		rocksLocation = new ArrayList<rockLocation>();
+		initialRocksLocation = new ArrayList<rockLocation>();
 
 		grid = new GridCell[m][n];
 		gridObjs = new ArrayList<>();
@@ -69,7 +69,7 @@ public class Grid {
 		teleI = 2;
 		teleJ = 1;
 		
-		rocksLocation.add(new rockLocation(1, 1));
+		initialRocksLocation.add(new rockLocation(1, 1));
 	}
 	
 	// Constructs the grid by inserting all objects (including gaps) in random positions.
@@ -94,7 +94,7 @@ public class Grid {
 				
 				if(chosenType == CellType.ROCK){
 					rockLocation location = new rockLocation(i,j);
-					rocksLocation.add(location);
+					initialRocksLocation.add(location);
 				}
 				grid[i][j] = new GridCell(chosenType);
 				gridObjs.remove(randIndex);
@@ -196,7 +196,7 @@ public class Grid {
 	}
 
 	public void setGrid(GridCell[][] grid) {
-		this.grid = grid;
+		Grid.grid = grid;
 	}
 	
 	public static int getTeleI() {
@@ -231,7 +231,7 @@ public class Grid {
 		Grid.robotJ = robotJ;
 	}
 	public static ArrayList<rockLocation> getRocksLocation() {
-		return rocksLocation;
+		return Grid.initialRocksLocation;
 	}
 
 

@@ -14,7 +14,7 @@ public class Help_R2D2 extends Problem {
 		gridN = 3;
 		grid = new Grid(gridM, gridN);
 		
-		State initial = new State(Grid.getRobotI(), Grid.getRobotJ(), Orientation.NORTH, Grid.getRocksLocation().size(), false, false);
+		State initial = new State(Grid.getRobotI(), Grid.getRobotJ(), Orientation.NORTH, Grid.getRocksLocation().size(), false, false,Grid.getRocksLocation());
 		super.setInitialState(initial);
 	}
 	
@@ -101,12 +101,15 @@ public class Help_R2D2 extends Problem {
 					System.out.println("1_N");
 					canMove = true;
 					canPush = true;
+					newState.updateRockLocation(currentI, currentJ, currentI-1, currentJ);	
 				}
 				else if(afterRock.getCellType().equals(CellType.PAD)){
 					System.out.println("2_N");
 					canMove = true;
 					canPush = true;
 					canCoverPad = true;
+					newState.updateRockLocation(currentI, currentJ, currentI-1, currentJ);	
+
 				}
 			}
 			
@@ -158,12 +161,15 @@ public class Help_R2D2 extends Problem {
 					System.out.println("1_S");
 					canMove = true;
 					canPush = true;
+					newState.updateRockLocation(currentI, currentJ, currentI+1, currentJ);	
 				}
 				else if(afterRock.getCellType().equals(CellType.PAD)){
 					System.out.println("2_S");
 					canMove = true;
 					canPush = true;
 					canCoverPad = true;
+					newState.updateRockLocation(currentI, currentJ, currentI+1, currentJ);	
+
 				}
 			}
 			
@@ -216,12 +222,17 @@ public class Help_R2D2 extends Problem {
 					System.out.println("1_E");
 					canMove = true;
 					canPush = true;
+					newState.updateRockLocation(currentI, currentJ, currentI, currentJ+1);
+					
+
 				}
 				else if(afterRock.getCellType().equals(CellType.PAD)){
 					System.out.println("2_E");
 					canMove = true;
 					canPush = true;
 					canCoverPad = true;
+					newState.updateRockLocation(currentI, currentJ, currentI, currentJ+1);
+
 				}
 			}
 			
@@ -273,12 +284,16 @@ public class Help_R2D2 extends Problem {
 					System.out.println("1_W");
 					canMove = true;
 					canPush = true;
+					newState.updateRockLocation(currentI, currentJ, currentI, currentJ-1);
+
 				}
 				else if(afterRock.getCellType().equals(CellType.PAD)){
 					System.out.println("2_W");
 					canMove = true;
 					canPush = true;
 					canCoverPad = true;
+					newState.updateRockLocation(currentI, currentJ, currentI, currentJ-1);
+
 				}
 			}
 			
