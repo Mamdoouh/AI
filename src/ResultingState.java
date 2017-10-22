@@ -8,6 +8,11 @@ public class ResultingState {
 		this.state = state;
 		this.operator = operator;
 	}
+	
+	@Override
+	public String toString() {
+		return state.toString();
+	}
 
 	public State getState() {
 		return state;

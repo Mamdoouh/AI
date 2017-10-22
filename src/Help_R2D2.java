@@ -3,30 +3,29 @@ import java.util.Hashtable;
 
 public class Help_R2D2 extends Problem {
 
-	private Grid grid;
-	private int gridM, gridN;
-	
+	private Grid myGrid;
+	private State currentState;
 	
 	public Help_R2D2() {
 		super(generateOperators());
+
+		this.myGrid = new Grid(3, 3);
+
+		this.currentState = new State(Grid.getRobotI(), Grid.getRobotJ(), Grid.getRocksLocation().size(), myGrid.cellsAsList());
 		
-		gridM = 3;
-		gridN = 3;
-		grid = new Grid(gridM, gridN);
+		super.setInitialState(currentState);
+		System.out.println("Initial State: " + currentState);
 		
-		State initial = new State(Grid.getRobotI(), Grid.getRobotJ(), Orientation.NORTH, Grid.getRocksLocation().size(), false, false);
-		super.setInitialState(initial);
+		
+		//State down = move(currentState, "DOWN");
+		//System.out.println(down);
+		
+		//State right = move(down, "RIGHT");
+		//System.out.println(right);
+
 	}
-	
-	public static Hashtable<String, Integer> generateOperators(){
-		Hashtable<String, Integer> operators = new Hashtable<>();
-		operators.put("MoveForward", 2);
-		operators.put("RotateLeft", 1);
-		operators.put("RotateRight", 1);
-		
-		return operators;
-	}
-	
+	 
+	// Goal test function
 	public boolean goalTest(State currentState) {
 		return currentState.getRemainingPads() == 0
 				&& currentState.getI() == Grid.getTeleI()
@@ -34,326 +33,157 @@ public class Help_R2D2 extends Problem {
 	}
 	
 	
+	// Transition function
 	public ArrayList<ResultingState> transition(State currentState) {
-		// Returns every possible next state along with the operator associated with it.
 		ArrayList<ResultingState> possibleNextStates = new ArrayList<>();
 
-		possibleNextStates.add(new ResultingState(moveForward(currentState), "MoveForward"));
-		possibleNextStates.add(new ResultingState(rotateRight(currentState), "RotateRight"));
-		possibleNextStates.add(new ResultingState(rotateLeft(currentState), "RotateLeft"));
-
+		possibleNextStates.add(new ResultingState(move(currentState, "UP"), "MoveUp"));
+		possibleNextStates.add(new ResultingState(move(currentState, "DOWN"), "MoveDown"));
+		possibleNextStates.add(new ResultingState(move(currentState, "RIGHT"), "MoveRight"));
+		possibleNextStates.add(new ResultingState(move(currentState, "LEFT"), "MoveLeft"));
+ 
 		return possibleNextStates;
 	}
 	
 	
-	public State moveForward (State currentState){
+	// If possible, move forward in a specified direction
+	public State move(State curState, String dir){
+		int curI = curState.getI();
+		int curJ = curState.getJ();
+		
+		boolean canMove = false;
+		boolean canCoverGap = false;
+		boolean canCoverPad = false;
+		
 		State newState = null;
+		GridCell nextCell = null;
+		GridCell nextOfNextCell = null;
 		
-		switch(currentState.getOrientation()){				
-			case NORTH:
-				newState = (moveNorth(currentState)).copyState();
+		switch(dir){
+			case "UP":
+				nextCell = curState.getCell(curI-1, curJ);
+				nextOfNextCell = curState.getCell(curI-2, curJ);
 				break;
 			
-			case SOUTH:
-				newState = (moveSouth(currentState)).copyState();
+			case "DOWN":
+				nextCell = curState.getCell(curI+1, curJ);
+				nextOfNextCell = curState.getCell(curI+2, curJ);
 				break;
 				
-			case EAST:
-				newState = (moveEast(currentState)).copyState();
+			case "RIGHT":
+				nextCell = curState.getCell(curI, curJ+1);
+				nextOfNextCell = curState.getCell(curI, curJ+2);
 				break;
-			
-			case WEST:
-				newState = (moveWest(currentState)).copyState();
-				break;
-		}
-		
-		//grid.printGrid();
-		//System.out.println(currentState + " ---> " + newState);
-		
-		return newState;
-	}
-
-	// moveForward relies on these 4 methods
-	public State moveNorth(State currentState){
-		State newState = currentState.copyState();
-		int currentI = currentState.getI();
-		int currentJ = currentState.getJ();
-		
-		newState.setWillMove(false);
-		newState.setWillPushRock(false);
-		
-		boolean canMove = false;
-		boolean canPush = false;
-		boolean canCoverPad = false;
-		
-		if(currentI-1 >= 0){
-			GridCell next = grid.getGrid()[currentI-1][currentJ];
-			
-			if(next.getCellType().equals(CellType.GAP)){
-				// Next cell is a gap
-				canMove = true;
-			}
-			
-			else if(next.getCellType().equals(CellType.ROCK) && (currentI-2 >= 0)){
-				// Next cell is a rock and there is a cell after it
-				GridCell afterRock = grid.getGrid()[currentI-2][currentJ];
-				if(afterRock.getCellType().equals(CellType.GAP)){
-					System.out.println("1_N");
-					canMove = true;
-					canPush = true;
-				}
-				else if(afterRock.getCellType().equals(CellType.PAD)){
-					System.out.println("2_N");
-					canMove = true;
-					canPush = true;
-					canCoverPad = true;
-				}
-			}
-			
-		}
-		
-		if(canMove || canPush || canCoverPad){
-			newState.setWillMove(true);
-		}
-		
-		if(canMove){
-			newState.setI(currentState.getI()-1);
-		}
-		
-		if(canPush){
-			newState.setWillPushRock(true);
-		}
-		
-		if(canCoverPad){
-			newState.setRemainingPads(currentState.getRemainingPads() - 1);
-		}
-		
-		return newState;
-	}
-	
-	public State moveSouth(State currentState){
-		State newState = currentState.copyState();
-		int currentI = currentState.getI();
-		int currentJ = currentState.getJ();
-		
-		newState.setWillMove(false);
-		newState.setWillPushRock(false);
-		
-		boolean canMove = false;
-		boolean canPush = false;
-		boolean canCoverPad = false;
-		
-		if(currentI+1 < Grid.getM()){
-			GridCell next = grid.getGrid()[currentI+1][currentJ];
-			
-			if(next.getCellType().equals(CellType.GAP)){
-				// Next cell is a gap
-				canMove = true;
-			}
-			
-			else if(next.getCellType().equals(CellType.ROCK) && (currentI+2 < Grid.getM())){
-				// Next cell is a rock and there is a cell after it
-				GridCell afterRock = grid.getGrid()[currentI+2][currentJ];
-				if(afterRock.getCellType().equals(CellType.GAP)){
-					System.out.println("1_S");
-					canMove = true;
-					canPush = true;
-				}
-				else if(afterRock.getCellType().equals(CellType.PAD)){
-					System.out.println("2_S");
-					canMove = true;
-					canPush = true;
-					canCoverPad = true;
-				}
-			}
-			
-		}
-		
-		if(canMove || canPush || canCoverPad){
-			newState.setWillMove(true);
-		}
-		
-		if(canMove){
-			newState.setI(currentState.getI()+1);
-		}
-		
-		if(canPush){
-			newState.setWillPushRock(true);
-		}
-		
-		if(canCoverPad){
-			newState.setRemainingPads(currentState.getRemainingPads() - 1);
-		}
-		
-		return newState;
-	}
-		
-	public State moveEast(State currentState){
-		State newState = currentState.copyState();
-		int currentI = currentState.getI();
-		int currentJ = currentState.getJ();
-		
-		newState.setWillMove(false);
-		newState.setWillPushRock(false);
-		
-		boolean canMove = false;
-		boolean canPush = false;
-		boolean canCoverPad = false;
-		
-		if(currentJ+1 < Grid.getN()){
-			GridCell next = grid.getGrid()[currentI][currentJ+1];
-			
-			if(next.getCellType().equals(CellType.GAP)){
-				// Next cell is a gap
-				canMove = true;
-			}
-			
-			else if(next.getCellType().equals(CellType.ROCK) && (currentJ+2 < Grid.getN())){
-				// Next cell is a rock and there is a cell after it
-				GridCell afterRock = grid.getGrid()[currentI][currentJ+2];
 				
-				if(afterRock.getCellType().equals(CellType.GAP)){
-					System.out.println("1_E");
-					canMove = true;
-					canPush = true;
-				}
-				else if(afterRock.getCellType().equals(CellType.PAD)){
-					System.out.println("2_E");
-					canMove = true;
-					canPush = true;
-					canCoverPad = true;
-				}
-			}
+			case "LEFT":
+				nextCell = curState.getCell(curI, curJ-1);
+				nextOfNextCell = curState.getCell(curI, curJ-2);
+				break;
+		}
+		
+		if(nextCell != null){
+			CellType next = nextCell.getCellType();
 			
-		}
-		
-		if(canMove || canPush || canCoverPad){
-			newState.setWillMove(true);
-		}
-		
-		if(canMove){
-			newState.setJ(currentState.getJ()+1);
-		}
-		
-		if(canPush){
-			newState.setWillPushRock(true);
-		}
-		
-		if(canCoverPad){
-			newState.setRemainingPads(currentState.getRemainingPads() - 1);
-		}
-		
-		return newState;
-	}
-	
-	public State moveWest(State currentState){
-		State newState = currentState.copyState();
-		int currentI = currentState.getI();
-		int currentJ = currentState.getJ();
-		
-		newState.setWillMove(false);
-		newState.setWillPushRock(false);
-		
-		boolean canMove = false;
-		boolean canPush = false;
-		boolean canCoverPad = false;
-		
-		if(currentJ-1 >= 0){
-			GridCell next = grid.getGrid()[currentI][currentJ-1];
-			
-			if(next.getCellType().equals(CellType.GAP)){
-				// Next cell is a gap
+			if(next == CellType.GAP || next == CellType.PAD || next == CellType.TELEPORTAL){
 				canMove = true;
 			}
 			
-			else if(next.getCellType().equals(CellType.ROCK) && (currentJ-2 >= 0)){
-				// Next cell is a rock and there is a cell after it
-				GridCell afterRock = grid.getGrid()[currentI][currentJ-2];
-				if(afterRock.getCellType().equals(CellType.GAP)){
-					System.out.println("1_W");
-					canMove = true;
-					canPush = true;
+			else {
+				if(next == CellType.ROCK){
+					if(nextOfNextCell != null){
+						CellType nextOfNext = nextOfNextCell.getCellType();
+						
+						if(nextOfNext == CellType.GAP){
+							canMove = true;
+							canCoverGap = true;
+						}
+						
+						if(nextOfNext == CellType.PAD){
+							canMove = true;
+							canCoverPad = true;
+						}
+					}
+				
 				}
-				else if(afterRock.getCellType().equals(CellType.PAD)){
-					System.out.println("2_W");
-					canMove = true;
-					canPush = true;
-					canCoverPad = true;
+			}	
+			
+			if(canMove){
+				CellType current = curState.getCell(curI, curJ).getCellType();
+				
+				int nextI = nextCell.getI();
+				int nextJ = nextCell.getJ();
+				
+				newState = curState.copyState();
+				
+				switch (current) {
+					case ROBOT:
+						newState.updateCell(curI, curJ, CellType.GAP);
+						break;
+						
+					case ROBOT_ON_PAD:
+						newState.updateCell(curI, curJ, CellType.PAD);
+						break;
+						
+					case ROBOT_ON_TELE:
+						newState.updateCell(curI, curJ, CellType.TELEPORTAL);
+						break;
+						
+					default:
+						break;
+				}
+				
+				switch (next) {
+					case GAP:
+						newState.updateCell(nextI, nextJ, CellType.ROBOT);
+						break;
+						
+					case PAD:
+						newState.updateCell(nextI, nextJ, CellType.ROBOT_ON_PAD);
+						break;
+						
+					case TELEPORTAL:
+						newState.updateCell(nextI, nextJ, CellType.ROBOT_ON_TELE);
+						break;
+
+					default:
+						break;
+				}
+
+				newState.setI(nextI);
+				newState.setJ(nextJ);
+
+				if(canCoverGap){
+					int afterNextI = nextOfNextCell.getI();
+					int afterNextJ = nextOfNextCell.getJ();
+					
+					newState.updateCell(nextI, nextJ, CellType.ROBOT);
+					newState.updateCell(afterNextI, afterNextJ, CellType.ROCK);
+				}
+				
+				if(canCoverPad){
+					int afterNextI = nextOfNextCell.getI();
+					int afterNextJ = nextOfNextCell.getJ();
+					
+					newState.updateCell(nextI, nextJ, CellType.ROBOT);
+					newState.updateCell(afterNextI, afterNextJ, CellType.ROCK_ON_PAD);
+					newState.setRemainingPads(curState.getRemainingPads() - 1);
 				}
 			}
-			
-		}
-		
-		if(canMove || canPush || canCoverPad){
-			newState.setWillMove(true);
-		}
-		
-		if(canMove){
-			newState.setJ(currentState.getJ()-1);
-		}
-		
-		if(canPush){
-			newState.setWillPushRock(true);
-		}
-		
-		if(canCoverPad){
-			newState.setRemainingPads(currentState.getRemainingPads() - 1);
 		}
 		
 		return newState;
 	}
-
-
-	public State rotateRight(State currentState) {
-		State newState = currentState.copyState();
-
-		switch (currentState.getOrientation()) {
-		case EAST:
-			newState.setOrientation(Orientation.SOUTH);
-			break;
-
-		case NORTH:
-			newState.setOrientation(Orientation.EAST);
-			break;
-
-		case SOUTH:
-			newState.setOrientation(Orientation.WEST);
-			break;
-
-		case WEST:
-			newState.setOrientation(Orientation.NORTH);
-			break;
-		}
-
-		//System.out.print("Action: RotateRight ->  ");
-		newState.setWillMove(false);
-		return newState;
-	}
-
 	
-	public State rotateLeft(State currentState) {
-		State newState = currentState.copyState();
-
-		switch (currentState.getOrientation()) {
-		case EAST:
-			newState.setOrientation(Orientation.NORTH);
-			break;
-
-		case NORTH:
-			newState.setOrientation(Orientation.WEST);
-			break;
-
-		case SOUTH:
-			newState.setOrientation(Orientation.EAST);
-			break;
-
-		case WEST:
-			newState.setOrientation(Orientation.SOUTH);
-			break;
-		}
+	
+	// Helper functions
+	public static Hashtable<String, Integer> generateOperators(){
+		Hashtable<String, Integer> operators = new Hashtable<>();
+		operators.put("MoveUp", 1);
+		operators.put("MoveDown", 1);
+		operators.put("MoveRight", 1);
+		operators.put("MoveLeft", 1);
 		
-		newState.setWillMove(false);
-		return newState;
+		return operators;
 	}
 
 }

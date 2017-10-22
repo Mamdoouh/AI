@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class GeneralSearch {
@@ -7,113 +6,48 @@ public class GeneralSearch {
 	Problem problem;
 	SearchStrategy strategy;
 	ArrayList<Node> nodes;
+	ArrayList<State> stateHistory;
 	ArrayList<Node> expandedNode;
-	ArrayList<State> visitedStates;
 	
 	// For testing
 	int IterativeLimit = 0;
-	int printLimit = 25;
+	int exploredNodes = 0; 
 
 	public GeneralSearch(Problem problem, SearchStrategy strategy) {
 		this.problem = problem;
 		this.strategy = strategy;
-		this.visitedStates = new ArrayList<>();
 		this.nodes = new ArrayList<>();
 		this.expandedNode = new ArrayList<>();
+		this.stateHistory = new ArrayList<>();
 	}
 	
-	public void updateRockLocation(int oldI, int oldJ, int newI, int newJ){
-		
-		rockLocation x = new rockLocation(oldI, oldJ);
-		
-		Grid.getRocksLocation().remove(x);
-		x.setI(newI);
-		x.setJ(newJ);
-		Grid.getRocksLocation().add(x);
-		
-	}
-
 	public Node search() {
 		Node root = new Node(problem.getInitialState(), null, null, 0, 0);
 		nodes.add(root);
-		
-		// FOR DEBUGGING
-		if(printLimit > 0){
-			System.out.println(Arrays.toString(nodes.toArray()));
-			printLimit--;
-		}
-		
 
 		while (true) {
-			if (nodes.isEmpty()) {
-				// No solution.
+			if (nodes.size() == 0) {
 				System.out.println("No solution");
 				return null;
 			}
 
 			Node targetNode = nodes.get(0);
 			State targetState = targetNode.getState();
-
+			System.out.println("Exploring: " + targetState);
+			exploredNodes++;
+			
 			if (problem.goalTest(targetState)) {
-				System.out.println("Found goal: " + targetNode.toString());
+				System.out.println("Found the following goal state after exploring " + exploredNodes + " nodes");
+				System.out.println(targetState);
 				return targetNode;
 			}
 
 			if (!strategy.equals(SearchStrategy.ID)
-					|| (strategy.equals(SearchStrategy.ID) && (IterativeLimit > targetNode.getDepth()
-							|| (IterativeLimit == targetNode.getDepth() && nodes.size() > 1)))) {
-				nodes.remove(0);
+				|| (strategy.equals(SearchStrategy.ID) && (IterativeLimit > targetNode.getDepth()
+				|| (IterativeLimit == targetNode.getDepth() && nodes.size() > 1)))) {
 				
-				// Update grid
-				int curI = targetState.getI();
-				int curJ = targetState.getJ();
-				
-				Grid.setRobotI(curI);
-				Grid.setRobotJ(curJ);
-				
-				if(targetState.isWillMove()){
-					Grid.grid[curI][curJ].setCellType(CellType.ROBOT);
-					
-					switch(targetState.getOrientation()){
-						case NORTH:
-							Grid.grid[curI+1][curJ].setCellType(CellType.GAP);
-							
-							if (targetState.isWillPushRock()){
-								Grid.grid[curI-1][curJ].setCellType(CellType.ROCK);
-								updateRockLocation(curI, curJ, curI-1, curJ);	
-							}
-							break;
-							
-						case SOUTH:
-							Grid.grid[curI-1][curJ].setCellType(CellType.GAP);
-						
-							if (targetState.isWillPushRock()){
-								Grid.grid[curI+1][curJ].setCellType(CellType.ROCK);
-								updateRockLocation(curI, curJ, curI+1, curJ);
-							}
-							break;
-						
-						case EAST:
-							Grid.grid[curI][curJ-1].setCellType(CellType.GAP);
-						
-							if (targetState.isWillPushRock()){
-								Grid.grid[curI][curJ+1].setCellType(CellType.ROCK);
-								updateRockLocation(curI, curJ, curI, curJ+1);
-							}
-							break;
-						
-						case WEST:
-							Grid.grid[curI][curJ+1].setCellType(CellType.GAP);
+				nodes.remove(0);			
 
-							if (targetState.isWillPushRock()){
-								Grid.grid[curI][curJ-1].setCellType(CellType.ROCK);
-								updateRockLocation(curI, curJ, curI, curJ-1);
-							}
-							break;					
-					}
-					
-				}
-				
  			}
 			
 			else {
@@ -122,60 +56,52 @@ public class GeneralSearch {
 				IterativeLimit++;
 			}
 
-			// Handle repeated states.
-			if (visitedStates.contains(targetState)) {
-				continue;
-			} 
-			else {
-				visitedStates.add(targetState);
-			}
-
-			if (!strategy.equals(SearchStrategy.ID) ||  (strategy.equals(SearchStrategy.ID) && IterativeLimit != targetNode.getDepth())) {
+			
+			if (!strategy.equals(SearchStrategy.ID) 
+				||  (strategy.equals(SearchStrategy.ID) && IterativeLimit != targetNode.getDepth())) {
+				
 				ArrayList<ResultingState> possibleNext = problem.transition(targetNode.getState());
 
 				for (ResultingState resState : possibleNext) {
 					expandedNode.clear();
-					
-					// Create new node from the given state.
-					State state = resState.getState();
-					String operatorName = resState.getOperator();
-					int operatorCost = problem.getOperators().get(operatorName);
-					int totalCost = targetNode.getCostFromRoot() + operatorCost;
-					int parentDepth = targetNode.getDepth();
-					Node newNode = new Node(state, targetNode, operatorName, parentDepth + 1, totalCost);
 
-					switch (strategy) {
-						case BF:
-							nodes.add(newNode);
-							break;
-	
-						case DF:
-							nodes.add(0, newNode);
-							break;
-	
-						case UC:
-							nodes.add(newNode);
-							break;
-	
-						case GR:
-							expandedNode.add(newNode);
-	
-							break;
-	
-						case ID:
-							nodes.add(0, newNode);
-							break;
-	
-						case AS:
-							nodes.add(0, newNode);
-							break;
+					State childState = resState.getState();
+					
+					if(childState != null){
+						String operatorName = resState.getOperator();
+						int operatorCost = problem.getOperators().get(operatorName);
+						int totalCost = targetNode.getCostFromRoot() + operatorCost;
+						int parentDepth = targetNode.getDepth();
+						Node newNode = new Node(childState.copyState(), targetNode, operatorName, parentDepth + 1, totalCost);
+
+						switch (strategy) {
+							case BF:
+								nodes.add(newNode);
+								break;
+		
+							case DF:
+								nodes.add(0, newNode);
+								break;
+		
+							case UC:
+								nodes.add(newNode);
+								break;
+		
+							case GR:
+								expandedNode.add(newNode);
+		
+								break;
+		
+							case ID:
+								nodes.add(0, newNode);
+								break;
+		
+							case AS:
+								nodes.add(0, newNode);
+								break;
+						}
 					}
-				}
 				
-				// FOR DEBUGGING
-				if(printLimit > 0){
-					System.out.println(Arrays.toString(nodes.toArray()));
-					printLimit--;
 				}
 				
 			}

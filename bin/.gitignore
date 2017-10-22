@@ -1,4 +1,14 @@
+/CellType.class
+/GeneralSearch.class
+/Grid.class
+/GridCell.class
+/GridImage.class
 /Help_R2D2.class
-/rockLocation.class
 /Main.class
+/Node.class
+/Orientation.class
+/Problem.class
 /ResultingState.class
+/SearchStrategy.class
+/State.class
+/rockLocation.class

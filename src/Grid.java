@@ -14,7 +14,7 @@ public class Grid {
 	private int gaps;
 	private ArrayList<GridCell> gridObjs;
 	private static ArrayList<rockLocation> rocksLocation;
-    static GridCell [][] grid = null;
+    private static GridCell [][] grid = null;
 	
 	// Save robot and teleportal chosen locations
 	private static int teleI;
@@ -43,34 +43,92 @@ public class Grid {
 		//generateGrid();
 		
 		generateSolveableGrid();
-		printGrid();
+		//System.out.println(gridToString(grid));
 	}
 	
-	public void generateSolveableGrid(){
-		GridCell gap = new GridCell(CellType.GAP);
-		GridCell rock = new GridCell(CellType.ROCK);
-		GridCell pad = new GridCell(CellType.PAD);
-		GridCell robot = new GridCell(CellType.ROBOT);
-		GridCell tele = new GridCell(CellType.TELEPORTAL);
+	public ArrayList<GridCell> cellsAsList(){
+		ArrayList<GridCell> result = new ArrayList<>();
 		
-		grid[0][0] = gap;
-		grid[0][1] = robot;
-		grid[0][2] = gap;
-		grid[1][0] = gap;
-		grid[1][1] = rock;
-		grid[1][2] = pad;
-		grid[2][0] = gap;
-		grid[2][1] = tele;
-		grid[2][2] = gap;
+		for (int i = 0; i < grid.length; i++) {
+			for (int j = 0; j < grid[0].length; j++) {
+				GridCell cell = new GridCell(grid[i][j].getCellType());
+				cell.setI(i);
+				cell.setJ(j);
+				
+				result.add(cell);
+			}
+		}	
 		
-		robotI = 0;
-		robotJ = 1;
-		
-		teleI = 2;
-		teleJ = 1;
-		
-		rocksLocation.add(new rockLocation(1, 1));
+		return result;
 	}
+	
+	// Converts a cell type to a string representation in the grid
+	public static String typeToString(CellType type){
+		switch(type){
+	        case ROBOT: 
+	            return "   ROB   ";
+	           
+	        case TELEPORTAL:
+	        	return "   TEL   ";
+	            
+	        case OBSTACLE: 
+	        	return "   OBS   ";
+	            
+	        case ROCK:
+	        	return "   ROC   ";
+	        
+	        case PAD:
+	        	return "   PAD   ";
+	            
+	        case GAP: 
+	        	return "   GAP   ";
+			
+	        case ROBOT_ON_PAD:
+	        	return " RT_PAD  ";
+			
+	        case ROBOT_ON_TELE:
+	        	return " RT_TEL  ";
+	        	
+	        case ROCK_ON_PAD:
+	        	return " RK_PAD  ";
+		}
+		
+		return null;
+	}
+	
+	// Converts a list of cells to a grid format then to string format
+	public static String listToString(ArrayList<GridCell> cells){
+		GridCell [][] map = new GridCell[m][n];
+		
+		for(GridCell curCell : cells){
+			CellType type = curCell.getCellType();
+			int i = curCell.getI();
+			int j = curCell.getJ();
+			
+			map[i][j] = new GridCell(type);
+		}
+		
+		return gridToString(map);
+		
+	}
+
+	// Converts a grid to string
+	public static String gridToString(GridCell [][] map){
+		String output = "";
+		output += "\n Grid now :- \n\n";
+		
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				CellType type = map[i][j].getCellType();
+				output += typeToString(type);
+			}
+			output += "\n\n";
+		}
+		
+		output += "------------------------------------------------- \n";
+		return output;
+	}
+
 	
 	// Constructs the grid by inserting all objects (including gaps) in random positions.
 	public void generateGrid(){
@@ -102,6 +160,36 @@ public class Grid {
 		}
 	}
 
+	// Constructs a custom grid where a solution is guaranteed
+	public void generateSolveableGrid(){
+		GridCell gap = new GridCell(CellType.GAP);
+		GridCell rock = new GridCell(CellType.ROCK);
+		GridCell pad = new GridCell(CellType.PAD);
+		GridCell robot = new GridCell(CellType.ROBOT);
+		GridCell tele = new GridCell(CellType.TELEPORTAL);
+		
+		grid[0][0] = robot;
+		grid[0][1] = rock;
+		grid[0][2] = pad;
+		
+		grid[1][0] = rock;
+		grid[1][1] = gap;
+		grid[1][2] = gap;
+		
+		grid[2][0] = pad;
+		grid[2][1] = gap;
+		grid[2][2] = tele;
+		
+		robotI = 0;
+		robotJ = 0;
+		
+		teleI = 2;
+		teleJ = 2;
+		
+		rocksLocation.add(new rockLocation(1, 1));
+		rocksLocation.add(new rockLocation(1, 0));
+	}
+	
 	// Inserts all our objects (robot, rocks, ...) as grid cells in objects' list.
 	public void fillObjectsList(){
 		gridObjs.add(new GridCell(CellType.ROBOT));
@@ -121,53 +209,24 @@ public class Grid {
 		}
 	}
 	
-	public static void printGrid(){
-		System.out.print("\n Grid now :- \n\n");
-		
-		for (int i = 0; i < grid.length; i++) {
-			for (int j = 0; j < grid[0].length; j++) {
-				CellType type = grid[i][j].getCellType();
-				
-				switch(type){
-		            case ROBOT: 
-		                System.out.print("  ROB  ");
-		                break;
-		               
-		            case TELEPORTAL: 
-		                System.out.print("  TEL  ");
-		                break;
-		                
-		            case OBSTACLE: 
-		                System.out.print("  OBS  ");
-		                break;
-		                
-		            case ROCK: 
-		                System.out.print("  ROC  ");
-		                break;
-		            
-		            case PAD: 
-		                System.out.print("  PAD  ");
-		                break;
-		                
-		            case GAP: 
-		                System.out.print("  GAP  ");
-		                break;
-				}
-			}
-			System.out.print("\n\n");
-		}
-		
-		System.out.println("-------------------------------------------------");
-		
-	}
-	
 	public int genRandom(int min, int max){
 		return min + (int) (Math.random()*max);
 	}
-	
+		
+	public GridCell[][] copyGrid(){
+		GridCell[][] copy = new GridCell[m][n];
+		
+		for(int i = 0; i < m; i++){
+			for(int j = 0; j < n; j++){
+				copy[i][j] = grid[i][j];
+			}
+		}
+		
+		return copy;
+	}
 
 	// Getters and setters.
-	public static int getM() {
+	public int getM() {
 		return m;
 	}
 
@@ -175,7 +234,7 @@ public class Grid {
 		Grid.m = m;
 	}
 
-	public static int getN() {
+	public int getN() {
 		return n;
 	}
 
@@ -196,7 +255,7 @@ public class Grid {
 	}
 
 	public void setGrid(GridCell[][] grid) {
-		this.grid = grid;
+		Grid.grid = grid;
 	}
 	
 	public static int getTeleI() {
@@ -230,6 +289,7 @@ public class Grid {
 	public static void setRobotJ(int robotJ) {
 		Grid.robotJ = robotJ;
 	}
+	
 	public static ArrayList<rockLocation> getRocksLocation() {
 		return rocksLocation;
 	}
